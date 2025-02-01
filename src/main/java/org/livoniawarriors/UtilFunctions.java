@@ -309,9 +309,10 @@ public class UtilFunctions {
         try {
             Field field = RobotBase.class.getDeclaredField("m_robotCopy");
             field.setAccessible(true);
-            TimedRobot returnObject = (TimedRobot)field.get(RobotBase.class);
-            returnObject.addPeriodic(callback, periodSeconds, offsetSeconds);
-            return true;
+            try (TimedRobot returnObject = (TimedRobot)field.get(RobotBase.class)) {
+                returnObject.addPeriodic(callback, periodSeconds, offsetSeconds);
+                return true;
+            }
         } catch (Exception e) {
             //don't do anything, we just return false that it didn't schedule
         } 
