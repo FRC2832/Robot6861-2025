@@ -47,10 +47,10 @@ import frc.robot.vision.Vision;
 public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     private SwerveSubsystem swerveDrive;
-    private RampSubsystem rampSubsystem;
+    //private RampSubsystem rampSubsystem;
     private FrontLeds frontLeds;
     private RearLeds rearLeds;
-    private Vision vision;
+    //private Vision vision;
 
     private XboxController driverController;
 
@@ -66,7 +66,7 @@ public class RobotContainer {
         swerveDrive = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveDirectory));
         frontLeds = new FrontLeds(6, 54);
         rearLeds = new RearLeds(frontLeds);
-        rampSubsystem = new RampSubsystem();
+        //rampSubsystem = new RampSubsystem();
         if(Robot.isSimulation()) {
             //drive fast in simulation
             swerveDrive.setMaximumSpeed(5, Math.PI);
@@ -77,7 +77,7 @@ public class RobotContainer {
             swerveDrive.setMaximumSpeed(1, Math.PI/2);
         }
 
-        vision = new Vision(swerveDrive);
+        //vision = new Vision(swerveDrive);
         frontCamera = new AprilTagCamera("front",
             new Rotation3d(0, Units.degreesToRadians(0), Math.toRadians(0)),
             new Translation3d(0.363,
@@ -85,7 +85,7 @@ public class RobotContainer {
                                 0.31),
             VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
 
-        vision.addCamera(frontCamera);
+       // vision.addCamera(frontCamera);
         /*
         vision.addCamera(new AprilTagCamera("rear",
             new Rotation3d(0, Units.degreesToRadians(-20), Math.toRadians(0)),
@@ -149,7 +149,7 @@ public class RobotContainer {
         frontLeds.setDefaultCommand(new ShowTargetInfo(frontLeds, frontCamera, Color.fromHSV(75, 255, 255)));
         rearLeds.setDefaultCommand(new ShowTargetInfo(rearLeds, frontCamera, Color.fromHSV(75, 255, 255)));
         //rearLeds.setDefaultCommand(new TestLeds(rearLeds));
-        rampSubsystem.setDefaultCommand(rampSubsystem.runMotor(() -> (driverController.getRightTriggerAxis() * 0.35) - (driverController.getLeftTriggerAxis() * 0.35)));
+        //rampSubsystem.setDefaultCommand(rampSubsystem.runMotor(() -> (driverController.getRightTriggerAxis() * 0.35) - (driverController.getLeftTriggerAxis() * 0.35)));
     }
 
     /**
