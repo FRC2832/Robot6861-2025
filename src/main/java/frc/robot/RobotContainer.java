@@ -11,9 +11,12 @@ import org.livoniawarriors.leds.LightningFlash;
 import org.livoniawarriors.leds.RainbowLeds;
 import org.livoniawarriors.leds.TestLeds;
 
+import com.google.flatbuffers.Constants;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -57,6 +60,7 @@ public class RobotContainer {
     private SendableChooser<Command> autoChooser;
 
     private AprilTagCamera frontCamera;
+    private UsbCamera camera;
 
     public RobotContainer() {
         driverController = new XboxController(0);
@@ -67,6 +71,14 @@ public class RobotContainer {
         frontLeds = new FrontLeds(6, 54);
         rearLeds = new RearLeds(frontLeds);
         //rampSubsystem = new RampSubsystem();
+
+        // Boilerplate code to start the camera server
+        camera = CameraServer.startAutomaticCapture(Constants.CAMERA_USB_PORT);
+        camera.setResolution(Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+        camera.setFPS(Constants.FRAMERATE);
+
+
+
         if(Robot.isSimulation()) {
             //drive fast in simulation
             swerveDrive.setMaximumSpeed(5, Math.PI);
