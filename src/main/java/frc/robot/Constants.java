@@ -14,4 +14,7 @@ public final class Constants {
     public static final int IMAGE_HEIGHT = 480;
     public static final int FRAMERATE = 20;
 
+    // Winch Pin
+    public static final int WINCH_PIN_MOTOR_CAN_ID = 8;
+
 }

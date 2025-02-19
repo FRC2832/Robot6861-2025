@@ -33,10 +33,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.RampDownCmd;
+import frc.robot.commands.RampUpCmd;
 import frc.robot.leds.FrontLeds;
 import frc.robot.leds.RearLeds;
 import frc.robot.leds.ShowTargetInfo;
 import frc.robot.ramp.RampSubsystem;
+import frc.robot.subsystem.WinchPinSubSys;
 import frc.robot.swervedrive.SwerveSubsystem;
 import frc.robot.vision.AprilTagCamera;
 import frc.robot.vision.Vision;
@@ -56,14 +59,15 @@ public class RobotContainer {
     //private Vision vision;
 
     private XboxController driverController;
-
+    private WinchPinSubSys winchPinSubSysObj;
     private SendableChooser<Command> autoChooser;
 
     private AprilTagCamera frontCamera;
-    private UsbCamera camera;
+    private UsbCamera driverCam;
 
     public RobotContainer() {
         driverController = new XboxController(0);
+        winchPinSubSysObj = new WinchPinSubSys();
 
         String swerveDirectory = "swerve/neo";
         //subsystems used in all robots
@@ -72,10 +76,13 @@ public class RobotContainer {
         rearLeds = new RearLeds(frontLeds);
         //rampSubsystem = new RampSubsystem();
 
+
         // Boilerplate code to start the camera server
-        camera = CameraServer.startAutomaticCapture(Constants.CAMERA_USB_PORT);
-        camera.setResolution(Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
-        camera.setFPS(Constants.FRAMERATE);
+        
+        driverCam = CameraServer.startAutomaticCapture();
+        driverCam.setResolution(640, 480);
+        driverCam.setFPS(20);
+
 
 
 
@@ -145,13 +152,13 @@ public class RobotContainer {
         Command driveFieldOrientedAnglularVelocity = swerveDrive.driveCommand(
             () -> MathUtil.applyDeadband(driverController.getLeftY() * -1, 0.05),
             () -> MathUtil.applyDeadband(driverController.getLeftX() * -1, 0.05),
-            () -> driverController.getRightX() * -1);
+            () -> driverController.getRightX() * 1);  //was -1
 
         if (Robot.isSimulation()) {
             new Trigger(driverController::getAButton).whileTrue(swerveDrive.driveToPose(new Pose2d(11.23, 4.15, Rotation2d.fromDegrees(0))));
             new Trigger(driverController::getYButton).whileTrue(swerveDrive.driveToPose(new Pose2d(14.73, 4.49, Rotation2d.fromDegrees(120))));
         } else {
-            new Trigger(driverController::getAButton).whileTrue(swerveDrive.driveToPose(new Pose2d(2.75, 4.15, Rotation2d.fromDegrees(0))));
+            //new Trigger(driverController::getAButton).whileTrue(swerveDrive.driveToPose(new Pose2d(2.75, 4.15, Rotation2d.fromDegrees(0))));
         }
         new Trigger(driverController::getLeftStickButton).whileTrue(swerveDrive.swerveLock());
         
@@ -162,6 +169,13 @@ public class RobotContainer {
         rearLeds.setDefaultCommand(new ShowTargetInfo(rearLeds, frontCamera, Color.fromHSV(75, 255, 255)));
         //rearLeds.setDefaultCommand(new TestLeds(rearLeds));
         //rampSubsystem.setDefaultCommand(rampSubsystem.runMotor(() -> (driverController.getRightTriggerAxis() * 0.35) - (driverController.getLeftTriggerAxis() * 0.35)));
+
+        // Trigger driverRightTrigger = driverController.rightTrigger();
+        new Trigger(driverController::getYButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
+        new Trigger(driverController::getYButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
+
+
+
     }
 
     /**

@@ -96,7 +96,10 @@ public class Robot extends LoggedRobot {
     /** This function is called once each time the robot enters Disabled mode. */
     @Override
     public void disabledInit() {
-        //TODO: set motors to coast?  I thought this was in here already...
+        
+       // m_robotContainer.setMotorBrake(true);
+       // disabledTimer.reset();
+       // disabledTimer.start();
     }
 
     @Override
