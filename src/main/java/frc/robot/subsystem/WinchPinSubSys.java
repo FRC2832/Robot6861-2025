@@ -27,7 +27,7 @@ public class WinchPinSubSys extends SubsystemBase {
   private final double downWinchVelPct;
   private final double downWinchVelVolts;
   private final double stopWinchVelVolts;
-  private final double upnWinchVelPct;
+  private final double upWinchVelPct;
   private final double upWinchVelVolts;
 
 
@@ -37,26 +37,32 @@ public class WinchPinSubSys extends SubsystemBase {
     SparkMaxConfig globalConfig = new SparkMaxConfig();
     SparkMaxConfig winchPinMotorConfig = new SparkMaxConfig();
 
-  
-    downWinchVelPct = 80.0 / 100.0;
-    downWinchVelVolts = downWinchVelPct * 12.0;
-    upnWinchVelPct = 25.0 / 100.0;
-    upWinchVelVolts = upnWinchVelPct * 12.0;
-    stopWinchVelVolts = 0.0;
-
 
 
     globalConfig
       .smartCurrentLimit(5);
-      //.idleMode(IdleMode.kBrake);
+     // .IdleMode(IdleMode.kBrake); //TODO: look up idlemode in 
+      
+      winchPinMotorConfig
+        .apply(globalConfig);
 
-    winchPinMotorConfig
-      .apply(globalConfig);
 
-
-  }
-
-  @Override
+    downWinchVelPct = 99.0 / 100.0;
+    downWinchVelVolts = downWinchVelPct * 12.0;
+    upWinchVelPct = 25.0 / 100.0;
+    upWinchVelVolts = upWinchVelPct * 12.0;
+    stopWinchVelVolts = 0.0;
+    
+      
+      
+        }
+      
+        //private void IdleMode(IdleMode kbrake) {
+          // TODO Auto-generated method stub
+         // throw new UnsupportedOperationException("Unimplemented method 'IdleMode'");
+       // }
+      
+        @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Winch Pin ", winchPinMotor.getAppliedOutput());

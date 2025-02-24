@@ -109,6 +109,8 @@ public class SwerveSubsystem extends SubsystemBase
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
+    setMotorBrake(true);
+
   }
   
 

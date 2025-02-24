@@ -33,12 +33,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ElevatorDownCmd;
+import frc.robot.commands.ElevatorUpCmd;
 import frc.robot.commands.RampDownCmd;
 import frc.robot.commands.RampUpCmd;
+import frc.robot.commands.WinchInCmd;
+import frc.robot.commands.WinchOutCmd;
+import frc.robot.commands.WinchStopCmd;
 import frc.robot.leds.FrontLeds;
 import frc.robot.leds.RearLeds;
 import frc.robot.leds.ShowTargetInfo;
 import frc.robot.ramp.RampSubsystem;
+import frc.robot.subsystem.ElevatorSubSys;
+import frc.robot.subsystem.HangWinchSubSys;
 import frc.robot.subsystem.WinchPinSubSys;
 import frc.robot.swervedrive.SwerveSubsystem;
 import frc.robot.vision.AprilTagCamera;
@@ -60,6 +68,8 @@ public class RobotContainer {
 
     private XboxController driverController;
     private WinchPinSubSys winchPinSubSysObj;
+    private HangWinchSubSys hangWinchSubSysObj;
+    private ElevatorSubSys elevatorSubSysObj;
     private SendableChooser<Command> autoChooser;
 
     private AprilTagCamera frontCamera;
@@ -68,6 +78,8 @@ public class RobotContainer {
     public RobotContainer() {
         driverController = new XboxController(0);
         winchPinSubSysObj = new WinchPinSubSys();
+        hangWinchSubSysObj = new HangWinchSubSys();
+        elevatorSubSysObj = new ElevatorSubSys();
 
         String swerveDirectory = "swerve/neo";
         //subsystems used in all robots
@@ -93,7 +105,7 @@ public class RobotContainer {
             swerveDrive.resetOdometry(new Pose2d(16.28, 4.03,Rotation2d.fromDegrees(180)));
         }
         else {
-            swerveDrive.setMaximumSpeed(1, Math.PI/2);
+            swerveDrive.setMaximumSpeed(1.5, Math.PI/2);
         }
 
         //vision = new Vision(swerveDrive);
@@ -123,6 +135,8 @@ public class RobotContainer {
         */
         //SmartDashboard.putData("Test Leds", new TestLeds(leds));
 
+        SmartDashboard.putNumber("Hang motor encoder", hangWinchSubSysObj.showEncoders());
+
         // Register Named Commands for PathPlanner
         //NamedCommands.registerCommand("flashRed", new LightningFlash(leds, Color.kFirstRed));
         //NamedCommands.registerCommand("flashBlue", new LightningFlash(leds, Color.kFirstBlue));
@@ -150,9 +164,10 @@ public class RobotContainer {
         // left stick controls translation
         // right stick controls the angular velocity of the robot
         Command driveFieldOrientedAnglularVelocity = swerveDrive.driveCommand(
-            () -> MathUtil.applyDeadband(driverController.getLeftY() * -1, 0.05),
-            () -> MathUtil.applyDeadband(driverController.getLeftX() * -1, 0.05),
-            () -> driverController.getRightX() * 1);  //was -1
+            () -> MathUtil.applyDeadband(driverController.getLeftY() * -1, 0.1),
+            () -> MathUtil.applyDeadband(driverController.getLeftX() * -1, 0.1),
+            () -> MathUtil.applyDeadband(driverController.getRightX() * 1, 0.1));
+            //() -> driverController.getRightX() * 1);  //was -1
 
         if (Robot.isSimulation()) {
             new Trigger(driverController::getAButton).whileTrue(swerveDrive.driveToPose(new Pose2d(11.23, 4.15, Rotation2d.fromDegrees(0))));
@@ -174,7 +189,13 @@ public class RobotContainer {
         new Trigger(driverController::getYButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
         new Trigger(driverController::getYButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
 
+        //new Trigger(driverController::getAButtonPressed).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+        //new Trigger(driverController::getBButtonPressed).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        //new Trigger(driverController::getXButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
+        new Trigger(driverController::getAButtonPressed).whileTrue(new ElevatorDownCmd(elevatorSubSysObj));
+        new Trigger(driverController::getBButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
+       // new Trigger(driverController::getXButtonPressed).whileTrue(new ElevatorStopCmd(elevatorSubSysObj));
 
     }
 
