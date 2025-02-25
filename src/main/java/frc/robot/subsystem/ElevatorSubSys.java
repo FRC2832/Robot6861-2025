@@ -43,7 +43,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
 
   public ElevatorSubSys() {
-    elevFrontLeaderMotor = new SparkMax(Constants.ELEV_FRONT_LEADER_MOTOR_CAN_ID, MotorType.kBrushless);
+    elevFrontLeaderMotor = new SparkMax(Constants.ELEV_BACK_FOLLOWER_MOTOR_CAN_ID, MotorType.kBrushless);
     //elevBackFollowerMotor = new SparkMax(Constants.ELEV_BACK_FOLLOWER_MOTOR_CAN_ID, MotorType.kBrushless);
     
     SparkMaxConfig globalConfig = new SparkMaxConfig();
