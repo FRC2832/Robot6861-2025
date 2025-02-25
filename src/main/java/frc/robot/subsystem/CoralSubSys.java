@@ -20,12 +20,12 @@ public class CoralSubSys extends SubsystemBase {
   /** Creates a new CoralSubsys. */
 
    private final SparkMax coralMotor;
-    private final RelativeEncoder coralMotorEncoder;
-    private double coralVelVolts;
-    private double coralVelPct;
-    private double coralVelRPM;
-    private double stopCoralVelVolts;
-    private double stopCoralVelPct;
+   private final RelativeEncoder coralMotorEncoder;
+   private final double coralVelVolts;
+   private final double coralVelPct;
+   //private final double coralVelRPM;
+   private final double stopCoralVelVolts;
+   private final double stopCoralVelPct;
 
     //private SparkPIDController coralPIDController = new SparkPIDController();
     
@@ -76,19 +76,19 @@ public class CoralSubSys extends SubsystemBase {
 
         //TODO: figure out the 2025 version of this coralMotor.setIdleMode(IdleMode.kBrake); 
         
-  }
+    }
 
-    public void resetEncoders() {
+  public void resetEncoders() {
         coralMotorEncoder.setPosition(0.0);
         
     }
 
-    public double showEncoders() {
+  public double showEncoders() {
       return coralMotorEncoder.getPosition();
     }
 
 
-    public void runCoralMotorOut() {
+  public void runCoralMotorOut() {
 
          // Uncomment this for development, testing or debugging work:
          SmartDashboard.putNumber("coral Motor Speed", coralMotorEncoder.getVelocity());
@@ -138,10 +138,10 @@ public class CoralSubSys extends SubsystemBase {
         SmartDashboard.putNumber("Coral Motor Speed", coralMotorEncoder.getVelocity());
         SmartDashboard.putNumber("Coral motor volts", coralMotor.getAppliedOutput());
        
-    }
+  }
 
 
-    public void runShooterHighSpeedAuton() {
+  public void runShooterHighSpeedAuton() {
 
         //shooterMotorFR.setVoltage(shooterVelVoltsFR);  // comment this out when running PID
 
@@ -179,10 +179,10 @@ public class CoralSubSys extends SubsystemBase {
        // SmartDashboard.putNumber("ProcessVariable Shooter FR", shooterMotorFREncoder.getVelocity());
        // Logger.registerCanSparkMax("Shooter Motor FL", () -> getVelocity());
        // Logger.registerCanSparkMax("Shooter Motor FR", shooterMotorFREncoder.getVelocity());
-    }
+  }
 
 
-    public void runShooterHighSpeed() {
+  public void runShooterHighSpeed() {
 
         //shooterMotorFR.setVoltage(shooterVelVoltsFR);  // comment this out when running PID
         // shooterMotorFL.setVoltage(shooterVelVoltsFL);  // comment this out when running PID
@@ -236,21 +236,22 @@ public class CoralSubSys extends SubsystemBase {
         //SmartDashboard.putNumber("ProcessVariable Coral", coralMotorEncoder.getVelocity());
        // Logger.registerCanSparkMax("Shooter Motor FL", () -> getVelocity());
        // Logger.registerCanSparkMax("Shooter Motor FR", shooterMotorFREncoder.getVelocity());
-    }
+  }
 
 
-    public void runShooterReverse() {
+  public void runCoralReverse() {
         double coralVelVoltsReverse = -.25 * 12.0;
       
         coralMotor.setVoltage(coralVelVoltsReverse);
-    }
+  }
+  
 
-    public void stopShooter() {
-        coralMotor.setVoltage(0.0);
+  public void stopCoral() {
+        coralMotor.setVoltage(stopCoralVelVolts);
         
         
         //coralMotor.setIdleMode(IdleMode.kBrake); 
-    }
+  }
 
 
   @Override
