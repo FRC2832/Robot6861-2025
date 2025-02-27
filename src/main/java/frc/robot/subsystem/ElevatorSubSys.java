@@ -7,21 +7,28 @@ package frc.robot.subsystem;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
 import frc.robot.Constants;
 
 public class ElevatorSubSys extends SubsystemBase {
   /** Creates a new ElevatorSubSys. */
   private final SparkMax elevFrontLeaderMotor;
-  //private final SparkMax elevBackFollowerMotor;
+  private final SparkMax elevBackFollowerMotor;
   private final RelativeEncoder elevFrontLeaderEncoder;
-  //private final RelativeEncoder elevBackFollowerEncoder;
+  private final RelativeEncoder elevBackFollowerEncoder;
 
   private SparkClosedLoopController elevFrontLeaderPIDController;
     private double kP;
@@ -34,50 +41,72 @@ public class ElevatorSubSys extends SubsystemBase {
 
     private final double upElevFrontLeaderVelPct;
     private final double upElevVelVolts;
-    //private final double endHangWinchVelPct;
-    //private final double endHangWinchVelVolts;
     private final double downElevFrontLeaderVelPct;
     private final double downElevVelVolts;
+    private final double stopElevVelVolts;
+    private final double stopElevVelPct;
 
 
 
 
   public ElevatorSubSys() {
-    elevFrontLeaderMotor = new SparkMax(Constants.ELEV_BACK_FOLLOWER_MOTOR_CAN_ID, MotorType.kBrushless);
-    //elevBackFollowerMotor = new SparkMax(Constants.ELEV_BACK_FOLLOWER_MOTOR_CAN_ID, MotorType.kBrushless);
-    
-    SparkMaxConfig globalConfig = new SparkMaxConfig();
-    SparkMaxConfig elevFrontLeaderMotorConfig = new SparkMaxConfig();
-    //SparkMaxConfig elevBackFollowerMotorConfig = new SparkMaxConfig();
-
-    globalConfig
-      .smartCurrentLimit(40); // change number later
-    
-    elevFrontLeaderMotorConfig
-      .apply(globalConfig);
-    
-    //elevBackFollowerMotorConfig
-      //.apply(globalConfig);
-    
+    elevFrontLeaderMotor = new SparkMax(Constants.ELEV_FRONT_LEADER_MOTOR_CAN_ID, MotorType.kBrushless);
+    elevBackFollowerMotor = new SparkMax(Constants.ELEV_BACK_FOLLOWER_MOTOR_CAN_ID, MotorType.kBrushless);
     
     //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);  //to help reduce CANbus high utilization
     //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 100);  // TODO: might be able to go higher than 100....
 
-    elevFrontLeaderEncoder = elevFrontLeaderMotor.getEncoder(); 
+    elevFrontLeaderPIDController = elevFrontLeaderMotor.getClosedLoopController(); // or does it need to be closedLoopController on the left?
+    elevFrontLeaderEncoder = elevFrontLeaderMotor.getEncoder();
+
+    SparkMaxConfig globalConfig = new SparkMaxConfig();
+    SparkMaxConfig elevFrontLeaderMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig elevBackFollowerMotorConfig = new SparkMaxConfig();
+
+    globalConfig
+      .smartCurrentLimit(60) // TODO: increase/change number later
+      .idleMode(IdleMode.kCoast);  //TODO: might need to set to kBrake if elevator moves up and down during competition
+    
+    elevFrontLeaderMotorConfig
+      .apply(globalConfig)
+      .inverted(true);
+
+    
+    elevBackFollowerMotorConfig
+      .apply(globalConfig)
+      .follow(elevFrontLeaderMotor)
+      .inverted(false);
+
+    
+    elevFrontLeaderMotorConfig.closedLoop
+      .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+      .p(kP)
+      .i(kI)
+      .d(kD)
+      .outputRange(kMinOutput, kMaxOutput);
+
+
+    
+    
+    elevFrontLeaderMotor.configure(globalConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);   //TODO: Look into how to what reset safe parameters means
+    elevBackFollowerMotor.configure(elevBackFollowerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    
     elevFrontLeaderEncoder.setPosition(0.0);
-    //hangWinchPIDController = hangWinchMotor.getPIDController();
+    
+    elevBackFollowerEncoder = elevBackFollowerMotor.getEncoder();
+    elevBackFollowerEncoder.setPosition(0.0);
 
    // hangWinchMotor.setSmartCurrentLimit(Constants.HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT);
    // hangWinchMotor.setSecondaryCurrentLimit(Constants.HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT);
 
-    upElevFrontLeaderVelPct = -20.0 / 100.0;
+    upElevFrontLeaderVelPct = -12.0 / 100.0;
     upElevVelVolts = upElevFrontLeaderVelPct * 12.0;
-    downElevFrontLeaderVelPct = 20.0 / 100.0;
+    downElevFrontLeaderVelPct = 7.0 / 100.0;
     downElevVelVolts = downElevFrontLeaderVelPct * 12.0;
-    //endHangWinchVelPct = 0.0 / 100.0;
-    //endHangWinchVelVolts = endHangWinchVelPct * 12.0;
+    stopElevVelPct = 0.0 / 100.0;
+    stopElevVelVolts = stopElevVelPct * 12.0;
 
-    //hangWinchMotor.setIdleMode(IdleMode.kBrake); // set to coast when needing to work on climber
 
   }
 
@@ -89,7 +118,42 @@ public class ElevatorSubSys extends SubsystemBase {
     return elevFrontLeaderEncoder.getPosition();
   }
 
-  // TODO: determine direction of motor. 
+
+
+  public void runElevL4() {
+    // Uncomment this for development, testing or debugging work:
+    SmartDashboard.putNumber("Elevator front leader encoder L4", elevFrontLeaderEncoder.getPosition());
+
+   
+
+    // PID coefficients
+    kP = 0.4;
+    kI = 0.0;
+    kD = 0.0;
+    // kIz = 0.0;
+    // kFF = 0.0;
+    kMaxOutput = 0.98;
+    kMinOutput = -0.98;
+
+    
+    double targetPosition = 15.0;  
+
+    elevFrontLeaderPIDController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
+
+    // Voltage open loop control
+    //elevFrontLeaderMotor.setVoltage(upElevVelVolts);
+
+     // Uncomment these for development, testing or debugging work:
+    SmartDashboard.putNumber("SetPoint", targetPosition);
+    SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+    SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
+   
+
+   
+  }
 
 
   public void runElevUp() {
@@ -123,8 +187,8 @@ public class ElevatorSubSys extends SubsystemBase {
     //SmartDashboard.putNumber("ProcessVariable", climberEncoder.getPosition());
     SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
     SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
-
-
+    SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
    
   }
 
@@ -166,13 +230,18 @@ public class ElevatorSubSys extends SubsystemBase {
   //public void endelevMotor() {
     //elevFrontLeaderMotor.setVoltage(upElevVelVolts);
   //}
+  public void stopElevator() {
+    elevFrontLeaderMotor.setVoltage(stopElevVelVolts);
+  }
+
+
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     // Uncomment this for development, testing or debugging work:
-    //SmartDashboard.putNumber("hangWinch encoder", hangWinchEncoder.getPosition());
-    //SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator Front Leader encoder", elevFrontLeaderEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator Front Leader volts", elevFrontLeaderMotor.getAppliedOutput());
 
   }
 }

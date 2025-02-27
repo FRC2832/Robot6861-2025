@@ -38,6 +38,8 @@ import frc.robot.commands.CoralOutCmd;
 import frc.robot.commands.CoralReverseCmd;
 import frc.robot.commands.CoralStopCmd;
 import frc.robot.commands.ElevatorDownCmd;
+import frc.robot.commands.ElevatorL4Cmd;
+import frc.robot.commands.ElevatorStopCmd;
 import frc.robot.commands.ElevatorUpCmd;
 import frc.robot.commands.RampDownCmd;
 import frc.robot.commands.RampUpCmd;
@@ -142,6 +144,7 @@ public class RobotContainer {
         //SmartDashboard.putData("Test Leds", new TestLeds(leds));
 
         SmartDashboard.putNumber("Hang motor encoder", hangWinchSubSysObj.showEncoders());
+        
 
         // Register Named Commands for PathPlanner
         //NamedCommands.registerCommand("flashRed", new LightningFlash(leds, Color.kFirstRed));
@@ -182,7 +185,7 @@ public class RobotContainer {
             //new Trigger(driverController::getAButton).whileTrue(swerveDrive.driveToPose(new Pose2d(2.75, 4.15, Rotation2d.fromDegrees(0))));
         }
 
-        
+
         new Trigger(driverController::getLeftStickButton).whileTrue(swerveDrive.swerveLock());
         
         //setup default commands that are used for driving
@@ -194,20 +197,25 @@ public class RobotContainer {
         //rampSubsystem.setDefaultCommand(rampSubsystem.runMotor(() -> (driverController.getRightTriggerAxis() * 0.35) - (driverController.getLeftTriggerAxis() * 0.35)));
 
         // Trigger driverRightTrigger = driverController.rightTrigger();
-        new Trigger(driverController::getYButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
-        new Trigger(driverController::getYButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
+        //new Trigger(driverController::getYButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
+       // new Trigger(driverController::getYButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
 
         //new Trigger(driverController::getAButtonPressed).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
         //new Trigger(driverController::getBButtonPressed).whileTrue(new WinchInCmd(hangWinchSubSysObj));
         //new Trigger(driverController::getXButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
 
-        //new Trigger(driverController::getAButtonPressed).whileTrue(new ElevatorDownCmd(elevatorSubSysObj));
-        //new Trigger(driverController::getBButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
-        // new Trigger(driverController::getXButtonPressed).whileTrue(new ElevatorStopCmd(elevatorSubSysObj));
-        new Trigger(driverController::getBButtonPressed).whileTrue(new CoralOutCmd(coralSubSysObj));
-        new Trigger(driverController::getXButtonPressed).whileTrue(new CoralStopCmd(coralSubSysObj));
-        new Trigger(driverController::getAButtonReleased).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        // new Trigger(driverController::getAButtonPressed).whileTrue(new ElevatorDownCmd(elevatorSubSysObj));
+        
+        //new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
+
+        new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
+        
+        new Trigger(driverController::getXButtonPressed).whileTrue(new ElevatorStopCmd(elevatorSubSysObj));
+        
+        new Trigger(() -> driverController.getRightTriggerAxis() > 0.3).whileTrue(new CoralOutCmd(coralSubSysObj));
+        new Trigger(() -> driverController.getRightTriggerAxis() < 0.2).whileTrue(new CoralStopCmd(coralSubSysObj));
+        new Trigger(driverController::getBButtonReleased).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
 
     }

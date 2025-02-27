@@ -16,20 +16,21 @@ public final class Constants {
 
     //Coral Motor
     public static final int CORAL_MOTOR_CAN_ID = 6;
+    public static final int CORAL_MOTOR_SMART_CURRENT_LIMIT = 40;
 
     // Winch Pin
     public static final int WINCH_PIN_MOTOR_CAN_ID = 8;
 
     //Hang Winch
     public static final int HANG_WINCH_MOTOR_CAN_ID = 7;
-    public static final String HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT = null;
-    public static final String HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT = null;
+    public static final int HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT = 40;
+    public static final int HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT = 40;
 
     // Elevator
     public static final int ELEV_FRONT_LEADER_MOTOR_CAN_ID = 4;
     public static final int ELEV_BACK_FOLLOWER_MOTOR_CAN_ID = 5;
-    public static final String CORAL_MOTOR_SMART_CURRENT_LIMIT = null;
-    public static final double FR_SHOOTER_MOTOR_REVERSE_PCT = 0;
+    
+   
 
 
     public static class OperatorConstants
