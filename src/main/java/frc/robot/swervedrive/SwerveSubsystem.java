@@ -97,12 +97,13 @@ public class SwerveSubsystem extends SubsystemBase
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
-    swerveDrive.setAngularVelocityCompensation(true,
+    swerveDrive.setAngularVelocityCompensation(true,  //TODO: set back to true?
                                                true,
-                                               0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
+                                               0.2); //TODO: could this help with the backright module issue???  Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
     swerveDrive.setModuleEncoderAutoSynchronize(false,
                                                 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
     swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
+    
     if (visionDriveTest)
     {
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
@@ -127,6 +128,7 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void simulationPeriodic()
   {
+
   }
 
   /**
@@ -727,6 +729,28 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.lockPose();
   }
+
+
+  /**
+   * this activates snail mode
+   */
+
+  public void snailMode(double maximumSpeedInMetersPerSecond, double maxRotationalVelocityRadiansPerSecond)
+  {
+    swerveDrive.setMaximumAllowableSpeeds(0.25*maximumSpeedInMetersPerSecond, .25*maxRotationalVelocityRadiansPerSecond);
+  
+  }
+
+  /**
+   * this activates turtle mode
+   */
+
+  public void turtleMode(double maximumSpeedInMetersPerSecond, double maxRotationalVelocityRadiansPerSecond)
+  {
+    swerveDrive.setMaximumAllowableSpeeds(0.55*maximumSpeedInMetersPerSecond, .55*maxRotationalVelocityRadiansPerSecond);
+  
+  }
+
 
   /**
    * Gets the current pitch angle of the robot, as reported by the imu.

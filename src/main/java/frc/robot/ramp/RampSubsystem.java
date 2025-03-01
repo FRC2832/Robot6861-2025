@@ -17,7 +17,7 @@ public class RampSubsystem extends SubsystemBase {
 
     public RampSubsystem() {
         //motor = new VictorSPX(5);
-        sensor = new DigitalInput(0);
+        // sensor = new DigitalInput(0);
        // motor.setInverted(true);
     }
 

@@ -18,7 +18,7 @@
     "drive": false,
     "angle": true
   },
-  "absoluteEncoderOffset": 94.0,
+  "absoluteEncoderOffset": 104.5,
   "location": {
     "front": -11.875,
     "left": 11.875

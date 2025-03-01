@@ -68,7 +68,7 @@ public class CoralSubSys extends SubsystemBase {
         
     
 
-        coralVelPct = 25.0 / 100.0;
+        coralVelPct = 40.0 / 100.0;
         coralVelVolts = coralVelPct * 12.0;
 
         stopCoralVelPct = 0.0 / 100.0;

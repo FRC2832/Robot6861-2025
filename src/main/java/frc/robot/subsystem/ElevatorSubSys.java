@@ -100,7 +100,7 @@ public class ElevatorSubSys extends SubsystemBase {
    // hangWinchMotor.setSmartCurrentLimit(Constants.HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT);
    // hangWinchMotor.setSecondaryCurrentLimit(Constants.HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT);
 
-    upElevFrontLeaderVelPct = -12.0 / 100.0;
+    upElevFrontLeaderVelPct = -60.0 / 100.0;
     upElevVelVolts = upElevFrontLeaderVelPct * 12.0;
     downElevFrontLeaderVelPct = 7.0 / 100.0;
     downElevVelVolts = downElevFrontLeaderVelPct * 12.0;

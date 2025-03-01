@@ -24,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -43,6 +44,8 @@ import frc.robot.commands.ElevatorStopCmd;
 import frc.robot.commands.ElevatorUpCmd;
 import frc.robot.commands.RampDownCmd;
 import frc.robot.commands.RampUpCmd;
+import frc.robot.commands.TurtleModeCmd;
+import frc.robot.commands.SnailModeCmd;
 import frc.robot.commands.WinchInCmd;
 import frc.robot.commands.WinchOutCmd;
 import frc.robot.commands.WinchStopCmd;
@@ -67,16 +70,17 @@ import frc.robot.vision.Vision;
 public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     private SwerveSubsystem swerveDrive;
-    //private RampSubsystem rampSubsystem;
     private FrontLeds frontLeds;
     private RearLeds rearLeds;
     //private Vision vision;
 
     private XboxController driverController;
+    private XboxController operatorController;
     private WinchPinSubSys winchPinSubSysObj;
     private HangWinchSubSys hangWinchSubSysObj;
     private ElevatorSubSys elevatorSubSysObj;
     private CoralSubSys coralSubSysObj;
+    private DigitalInput coralSensor;
     private SendableChooser<Command> autoChooser;
 
     private AprilTagCamera frontCamera;
@@ -94,7 +98,7 @@ public class RobotContainer {
         swerveDrive = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveDirectory));
         frontLeds = new FrontLeds(6, 54);
         rearLeds = new RearLeds(frontLeds);
-        //rampSubsystem = new RampSubsystem();
+        coralSensor = new DigitalInput(9); 
 
 
         // Boilerplate code to start the camera server
@@ -113,7 +117,7 @@ public class RobotContainer {
             swerveDrive.resetOdometry(new Pose2d(16.28, 4.03,Rotation2d.fromDegrees(180)));
         }
         else {
-            swerveDrive.setMaximumSpeed(1.5, Math.PI/2);
+            swerveDrive.setMaximumSpeed(2.5, Math.PI/2); //maxspeed of robot
         }
 
         //vision = new Vision(swerveDrive);
@@ -194,11 +198,13 @@ public class RobotContainer {
         frontLeds.setDefaultCommand(new ShowTargetInfo(frontLeds, frontCamera, Color.fromHSV(75, 255, 255)));
         rearLeds.setDefaultCommand(new ShowTargetInfo(rearLeds, frontCamera, Color.fromHSV(75, 255, 255)));
         //rearLeds.setDefaultCommand(new TestLeds(rearLeds));
+
         //rampSubsystem.setDefaultCommand(rampSubsystem.runMotor(() -> (driverController.getRightTriggerAxis() * 0.35) - (driverController.getLeftTriggerAxis() * 0.35)));
 
         // Trigger driverRightTrigger = driverController.rightTrigger();
-        //new Trigger(driverController::getYButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
-       // new Trigger(driverController::getYButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
+  
+
+        //new Trigger(operatorController::getRightTriggerAxis).whileTrue(new WinchOutCmd(winchPinSubSys));
 
         //new Trigger(driverController::getAButtonPressed).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
         //new Trigger(driverController::getBButtonPressed).whileTrue(new WinchInCmd(hangWinchSubSysObj));
@@ -206,16 +212,25 @@ public class RobotContainer {
 
 
         // new Trigger(driverController::getAButtonPressed).whileTrue(new ElevatorDownCmd(elevatorSubSysObj));
-        
-        //new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
-
-        new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
-        
+        new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
+        //new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
         new Trigger(driverController::getXButtonPressed).whileTrue(new ElevatorStopCmd(elevatorSubSysObj));
-        
+
+        //new Trigger(operatorController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
+        //new Trigger(operatorController::getYButtonPressed).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
+        //new Trigger(operatorController::getXButtonPressed).whileTrue(new ElevatorStopCmd(elevatorSubSysObj));
+
+
+        //Turtle and snail mode TODO: fix this - method in command is not working
+        //new Trigger(() -> driverController.getLeftTriggerAxis() > 0.2 ).whileTrue(new TurtleModeCmd(swerveDrive));
+       // new Trigger(() -> driverController.getLeftTriggerAxis() > 0.6).whileTrue(new SnailModeCmd(swerveDrive));
+
+
         new Trigger(() -> driverController.getRightTriggerAxis() > 0.3).whileTrue(new CoralOutCmd(coralSubSysObj));
         new Trigger(() -> driverController.getRightTriggerAxis() < 0.2).whileTrue(new CoralStopCmd(coralSubSysObj));
         new Trigger(driverController::getBButtonReleased).whileTrue(new CoralReverseCmd(coralSubSysObj));
+
+        //new Trigger(operatorController::getBButtonReleased).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
 
     }

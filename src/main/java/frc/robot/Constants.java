@@ -17,6 +17,7 @@ public final class Constants {
     //Coral Motor
     public static final int CORAL_MOTOR_CAN_ID = 6;
     public static final int CORAL_MOTOR_SMART_CURRENT_LIMIT = 40;
+    //public static final int CORAL_SENSOR_DIO_PORT = 9;
 
     // Winch Pin
     public static final int WINCH_PIN_MOTOR_CAN_ID = 8;
