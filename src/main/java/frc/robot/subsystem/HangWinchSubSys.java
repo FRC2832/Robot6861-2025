@@ -4,8 +4,10 @@
 
 package frc.robot.subsystem;
 
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -51,6 +53,7 @@ public class HangWinchSubSys extends SubsystemBase {
 
 
   public HangWinchSubSys() {
+    super();
     hangWinchMotor = new SparkMax(Constants.HANG_WINCH_MOTOR_CAN_ID, MotorType.kBrushless);
 
     SparkMaxConfig globalConfig = new SparkMaxConfig();
@@ -58,7 +61,7 @@ public class HangWinchSubSys extends SubsystemBase {
 
     globalConfig
       .smartCurrentLimit(40);
-      //.idleMode(IdleMode.kBrake);
+     // .idleMode(IdleMode.kBrake); //TODO: look up idlemode in 2025 Revlib
 
     hangWinchMotorConfig
       .apply(globalConfig);
@@ -69,7 +72,7 @@ public class HangWinchSubSys extends SubsystemBase {
 
     hangWinchEncoder = hangWinchMotor.getEncoder(); 
     hangWinchEncoder.setPosition(0.0);
-    //hangWinchPIDController = hangWinchMotor.getPIDController();
+    hangWinchPIDController = hangWinchMotor.getClosedLoopController();
 
    // hangWinchMotor.setSmartCurrentLimit(Constants.HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT);
    // hangWinchMotor.setSecondaryCurrentLimit(Constants.HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT);
@@ -95,13 +98,11 @@ public class HangWinchSubSys extends SubsystemBase {
 
   // TODO: determine direction of motor. 
 
-
-  public void runHangWinchOut() {
+  public void runHangWinchOutPrep() {
     // Uncomment this for development, testing or debugging work:
-    SmartDashboard.putNumber("Hang winch encoder out", hangWinchEncoder.getPosition());
-
+    
     // PID coefficients
-    kP = 0.74;
+    kP = 0.1;
     // kI = 0.0;
     // kD = 0.0;
     // kIz = 0.0;
@@ -117,7 +118,7 @@ public class HangWinchSubSys extends SubsystemBase {
    // climberPIDController.setFF(kFF);
     // hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
-    double rotations = 50.0;  
+    double rotations = 25.0;  
 
     // hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
     hangWinchMotor.setVoltage(outWinchVelVolts);
@@ -125,8 +126,44 @@ public class HangWinchSubSys extends SubsystemBase {
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
     //SmartDashboard.putNumber("ProcessVariable", climberEncoder.getPosition());
-    SmartDashboard.putNumber("Hang Winch Motor Speed", hangWinchEncoder.getVelocity());
-    SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Hang Winch Motor Speed", hangWinchEncoder.getVelocity());
+    //SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
+
+  }
+
+
+
+  public void runHangWinchOut() {
+    // Uncomment this for development, testing or debugging work:
+    //SmartDashboard.putNumber("Hang winch encoder out", hangWinchEncoder.getPosition());
+
+    // PID coefficients
+    kP = 0.1;
+    // kI = 0.0;
+    // kD = 0.0;
+    // kIz = 0.0;
+    // kFF = 0.0;
+    kMaxOutput = 0.98;
+    kMinOutput = -0.98;
+
+    // set PID coefficients
+    // hangWinchPIDController.setP(kP);
+    //climberPIDController.setI(kI);
+    //climberPIDController.setD(kD);
+    // climberPIDController.setIZone(kIz);
+   // climberPIDController.setFF(kFF);
+    // hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
+
+    double rotations = -125.0;  //was 50.0
+
+    hangWinchPIDController.setReference(rotations, ControlType.kPosition);
+    //hangWinchMotor.setVoltage(outWinchVelVolts);
+
+     // Uncomment these for development, testing or debugging work:
+    //SmartDashboard.putNumber("SetPoint", rotations);
+    //SmartDashboard.putNumber("ProcessVariable", climberEncoder.getPosition());
+    //SmartDashboard.putNumber("Hang Winch Motor Speed", hangWinchEncoder.getVelocity());
+    //SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
 
 
    
@@ -136,10 +173,9 @@ public class HangWinchSubSys extends SubsystemBase {
 
   public void runHangWinchIn() {
     // Uncomment this for development, testing or debugging work:
-    SmartDashboard.putNumber("Hang Winch motor encoder - in", hangWinchEncoder.getPosition());
-
+    
     // PID coefficients
-    kP = 0.5;
+    kP = 0.1;
     //kI = 0.0;
     //kD = 0.0;
     //kIz = 0.0;
@@ -175,8 +211,8 @@ public class HangWinchSubSys extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // Uncomment this for development, testing or debugging work:
-    //SmartDashboard.putNumber("hangWinch encoder", hangWinchEncoder.getPosition());
-    //SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
+    SmartDashboard.putNumber("hangWinch encoder", hangWinchEncoder.getPosition());
+    SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
 
   }
 }

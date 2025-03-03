@@ -4,22 +4,18 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystem.ElevatorSubSys;
+import frc.robot.subsystem.HangWinchSubSys;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorDownCmd extends Command {
-  /** Creates a new ElevatorDownCmd. */
+public class WinchOutPrepCmd extends Command {
+  /** Creates a new WinchOutPrepCmd. */
+  private final HangWinchSubSys hangWinchSubSysObj;
 
-  private final ElevatorSubSys elevatorSubSysObj;
-  private final XboxController operatorController;
-
-  public ElevatorDownCmd(ElevatorSubSys elevatorSubSys, XboxController operatorController) {
+  public WinchOutPrepCmd(HangWinchSubSys hangWinchSubSys) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevatorSubSysObj = elevatorSubSys;
-    this.operatorController = operatorController;
-    addRequirements(elevatorSubSysObj);
+    this.hangWinchSubSysObj = hangWinchSubSys;
+    addRequirements(hangWinchSubSysObj);
   }
 
   // Called when the command is initially scheduled.
@@ -29,7 +25,7 @@ public class ElevatorDownCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevatorSubSysObj.runElevDown(operatorController.getLeftY());
+    hangWinchSubSysObj.runHangWinchOutPrep();
   }
 
   // Called once the command ends or is interrupted.
