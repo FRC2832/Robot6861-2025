@@ -50,8 +50,8 @@ public class ElevatorSubSys extends SubsystemBase {
     elevFrontLeaderMotor = new SparkMax(Constants.ELEV_FRONT_LEADER_MOTOR_CAN_ID, MotorType.kBrushless);
     elevBackFollowerMotor = new SparkMax(Constants.ELEV_BACK_FOLLOWER_MOTOR_CAN_ID, MotorType.kBrushless);
     
-    //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);  //to help reduce CANbus high utilization
-    //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 100);  // TODO: might be able to go higher than 100....
+    //elevFrontLeaderhMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);  //to help reduce CANbus high utilization
+    //elevFrontLeaderMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 100);  // TODO: might be able to go higher than 100....
 
     elevFrontLeaderPIDController = elevFrontLeaderMotor.getClosedLoopController();
     elevFrontLeaderEncoder = elevFrontLeaderMotor.getEncoder();
@@ -61,12 +61,12 @@ public class ElevatorSubSys extends SubsystemBase {
     SparkMaxConfig elevBackFollowerMotorConfig = new SparkMaxConfig();
 
     globalConfig
-      .smartCurrentLimit(60) // TODO: increase/change number later
+      .smartCurrentLimit(70) // TODO: increase/change number later
       .idleMode(IdleMode.kBrake);  
 
     elevFrontLeaderMotorConfig
       .apply(globalConfig)
-      .inverted(true);
+      .inverted(false);
 
     
     elevBackFollowerMotorConfig
@@ -76,11 +76,11 @@ public class ElevatorSubSys extends SubsystemBase {
 
     
     elevFrontLeaderMotorConfig.closedLoop
-      .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-      .p(0.0, ClosedLoopSlot.kSlot0)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .p(0.09, ClosedLoopSlot.kSlot0)
       .i(0.0, ClosedLoopSlot.kSlot0)
       .d(0.0, ClosedLoopSlot.kSlot0)
-      .outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot0);
+      .outputRange(-0.3, 0.3, ClosedLoopSlot.kSlot0);
 
 
     
@@ -94,10 +94,8 @@ public class ElevatorSubSys extends SubsystemBase {
     elevBackFollowerEncoder = elevBackFollowerMotor.getEncoder();
     elevBackFollowerEncoder.setPosition(0.0);
 
-   // hangWinchMotor.setSmartCurrentLimit(Constants.HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT);
-   // hangWinchMotor.setSecondaryCurrentLimit(Constants.HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT);
 
-    upElevFrontLeaderVelPct = -17.0 / 100.0;
+    upElevFrontLeaderVelPct = -21.0 / 100.0;
     upElevVelVolts = upElevFrontLeaderVelPct * 12.0;
     downElevFrontLeaderVelPct = -0.5 / 100.0;  //needs small negative value to counteract effect of gravity. kG = 1.2 volts
     downElevVelVolts = downElevFrontLeaderVelPct * 12.0;
@@ -120,9 +118,9 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevUpJoystick(double leftJoystickValue) {
 
-    double rotations = 15.0;  
+    double rotations = 5.0;  
 
-    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    //elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts * -leftJoystickValue);  //needs to be net negative because -volts is up for elevator
 
      // Uncomment these for development, testing or debugging work:
@@ -139,7 +137,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
     double rotations = 15.0;  
 
-    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    // elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     //if (elevFrontLeaderEncoder.getPosition() > 2) { // TODO: test value
     
     elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
@@ -164,18 +162,18 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL4() {
 
-    double rotations = 5.0;  // TODO: increase to 15 once working better
+    double rotations = -15.0;  // TODO: increase to 15 once working better
 
-    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
 
     // Voltage open loop control
-    if (elevFrontLeaderEncoder.getPosition() > 4.5 || elevFrontLeaderEncoder.getPosition() < 6.0) { //TODO - change to 14.5 and 16.0 when working 
-        elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
-    } else {
+    // if (elevFrontLeaderEncoder.getPosition() > 4.5 || elevFrontLeaderEncoder.getPosition() < 6.0) { //TODO - change to 14.5 and 16.0 when working 
+       // elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
+   // } else {
 
-        elevFrontLeaderMotor.setVoltage(upElevVelVolts);
-    }
+       // elevFrontLeaderMotor.setVoltage(upElevVelVolts);
+    //}
        
 
      // Uncomment these for development, testing or debugging work:
@@ -192,11 +190,10 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevUp() {
     // Uncomment this for development, testing or debugging work:
-    SmartDashboard.putNumber("Elevator front leader encoder up", elevFrontLeaderEncoder.getPosition());
+   
+    double rotations = 5.0;  //should be around 15
 
-    double rotations = 15.0;  
-
-    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+   // elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts);
 
      // Uncomment these for development, testing or debugging work:
@@ -218,7 +215,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
     elevFrontLeaderMotor.setVoltage(downElevVelVolts * -leftJoystickValue);  //needs to be net positive because for elevator, -volts is up, +volts is down
 
-    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    // elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
     // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);

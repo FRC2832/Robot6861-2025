@@ -229,6 +229,7 @@ public class RobotContainer {
 
 
         // Elevator Commands
+        new Trigger(() -> operatorController.getPOV() == 0).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
         new Trigger(() -> operatorController.getLeftY() < -0.075).whileTrue(new ElevatorUpJoystickCmd(elevatorSubSysObj, operatorController));
        // new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
         new Trigger(() -> operatorController.getLeftY() > 0.075).whileTrue(new ElevatorDownCmd(elevatorSubSysObj, operatorController));

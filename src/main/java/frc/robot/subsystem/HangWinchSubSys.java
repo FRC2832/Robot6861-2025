@@ -64,7 +64,7 @@ public class HangWinchSubSys extends SubsystemBase {
     SparkMaxConfig hangWinchMotorConfig = new SparkMaxConfig();
 
     globalConfig
-      .smartCurrentLimit(40);
+      .smartCurrentLimit(60);
      // .idleMode(IdleMode.kBrake); //TODO: look up idlemode in 2025 Revlib
 
     hangWinchMotorConfig
