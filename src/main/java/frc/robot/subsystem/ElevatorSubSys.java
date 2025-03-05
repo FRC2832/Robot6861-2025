@@ -32,22 +32,15 @@ public class ElevatorSubSys extends SubsystemBase {
   private final RelativeEncoder elevBackFollowerEncoder;
 
   private SparkClosedLoopController elevFrontLeaderPIDController;
-    private double kP;
-    private double kI;
-    private double kD;
-    private double kIz;
-    private double kFF;
-    private double kMaxOutput;
-    private double kMinOutput;
 
-    private final double upElevFrontLeaderVelPct;
-    private final double upElevVelVolts;
-    private final double downElevFrontLeaderVelPct;
-    private final double downElevVelVolts;
-    private final double holdElevFrontLeaderVelPct;
-    private final double holdElevVelVolts;
-    private final double stopElevVelVolts;
-    private final double stopElevVelPct;
+  private final double upElevFrontLeaderVelPct;
+  private final double upElevVelVolts;
+  private final double downElevFrontLeaderVelPct;
+  private final double downElevVelVolts;
+  private final double holdElevFrontLeaderVelPct;
+  private final double holdElevVelVolts;
+  private final double stopElevVelVolts;
+  private final double stopElevVelPct;
 
 
 
@@ -60,7 +53,7 @@ public class ElevatorSubSys extends SubsystemBase {
     //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);  //to help reduce CANbus high utilization
     //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 100);  // TODO: might be able to go higher than 100....
 
-    elevFrontLeaderPIDController = elevFrontLeaderMotor.getClosedLoopController(); // or does it need to be closedLoopController on the left?
+    elevFrontLeaderPIDController = elevFrontLeaderMotor.getClosedLoopController();
     elevFrontLeaderEncoder = elevFrontLeaderMotor.getEncoder();
 
     SparkMaxConfig globalConfig = new SparkMaxConfig();
@@ -84,15 +77,15 @@ public class ElevatorSubSys extends SubsystemBase {
     
     elevFrontLeaderMotorConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-      .p(kP)
-      .i(kI)
-      .d(kD)
-      .outputRange(kMinOutput, kMaxOutput);
+      .p(0.0, ClosedLoopSlot.kSlot0)
+      .i(0.0, ClosedLoopSlot.kSlot0)
+      .d(0.0, ClosedLoopSlot.kSlot0)
+      .outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot0);
 
 
     
     
-    elevFrontLeaderMotor.configure(globalConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);   //TODO: Look into how to what reset safe parameters means
+    elevFrontLeaderMotor.configure(elevFrontLeaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);   // Look into how to what reset safe parameters means (answer from docs: useful in case the SPARK MAX is replaced)
     elevBackFollowerMotor.configure(elevBackFollowerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     
@@ -126,29 +119,10 @@ public class ElevatorSubSys extends SubsystemBase {
 
 
   public void runElevUpJoystick(double leftJoystickValue) {
-    // Uncomment this for development, testing or debugging work:
-    
-
-    // PID coefficients
-    kP = 0.0;
-    // kI = 0.0;
-    // kD = 0.0;
-    // kIz = 0.0;
-    // kFF = 0.0;
-    kMaxOutput = 0.98;
-    kMinOutput = -0.98;
-
-    // set PID coefficients
-    // hangWinchPIDController.setP(kP);
-    //climberPIDController.setI(kI);
-    //climberPIDController.setD(kD);
-    // climberPIDController.setIZone(kIz);
-   // climberPIDController.setFF(kFF);
-    // hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
     double rotations = 15.0;  
 
-    // hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
+    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts * -leftJoystickValue);  //needs to be net negative because -volts is up for elevator
 
      // Uncomment these for development, testing or debugging work:
@@ -162,29 +136,10 @@ public class ElevatorSubSys extends SubsystemBase {
   }
 
   public void runElevHold() {
-    // Uncomment this for development, testing or debugging work:
-    
-
-    // PID coefficients
-    kP = 0.0;
-    // kI = 0.0;
-    // kD = 0.0;
-    // kIz = 0.0;
-    // kFF = 0.0;
-    kMaxOutput = 0.98;
-    kMinOutput = -0.98;
-
-    // set PID coefficients
-    // hangWinchPIDController.setP(kP);
-    //climberPIDController.setI(kI);
-    //climberPIDController.setD(kD);
-    // climberPIDController.setIZone(kIz);
-   // climberPIDController.setFF(kFF);
-    // hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
     double rotations = 15.0;  
 
-    // hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
+    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
     //if (elevFrontLeaderEncoder.getPosition() > 2) { // TODO: test value
     
     elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
@@ -208,22 +163,10 @@ public class ElevatorSubSys extends SubsystemBase {
 
 
   public void runElevL4() {
-    // Uncomment this for development, testing or debugging work:
-  
 
-    // PID coefficients
-    kP = 0.0;
-    kI = 0.0;
-    kD = 0.0;
-    // kIz = 0.0;
-    // kFF = 0.0;
-    kMaxOutput = 0.98;
-    kMinOutput = -0.98;
+    double rotations = 5.0;  // TODO: increase to 15 once working better
 
-    
-    double targetPosition = 5.0;  // TODO: increase to 15 once working better
-
-    //elevFrontLeaderPIDController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
 
     // Voltage open loop control
@@ -236,7 +179,7 @@ public class ElevatorSubSys extends SubsystemBase {
        
 
      // Uncomment these for development, testing or debugging work:
-    SmartDashboard.putNumber("SetPoint", targetPosition);
+    SmartDashboard.putNumber("SetPoint", rotations);
     SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
     SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
     SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
@@ -251,26 +194,9 @@ public class ElevatorSubSys extends SubsystemBase {
     // Uncomment this for development, testing or debugging work:
     SmartDashboard.putNumber("Elevator front leader encoder up", elevFrontLeaderEncoder.getPosition());
 
-    // PID coefficients
-    kP = 0.0;
-    // kI = 0.0;
-    // kD = 0.0;
-    // kIz = 0.0;
-    // kFF = 0.0;
-    kMaxOutput = 0.98;
-    kMinOutput = -0.98;
-
-    // set PID coefficients
-    // hangWinchPIDController.setP(kP);
-    //climberPIDController.setI(kI);
-    //climberPIDController.setD(kD);
-    // climberPIDController.setIZone(kIz);
-   // climberPIDController.setFF(kFF);
-    // hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
-
     double rotations = 15.0;  
 
-    // hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
+    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts);
 
      // Uncomment these for development, testing or debugging work:
@@ -288,29 +214,11 @@ public class ElevatorSubSys extends SubsystemBase {
   public void runElevDown(double leftJoystickValue) {
     // Uncomment this for development, testing or debugging work:
 
-
-    // PID coefficients
-    kP = 0.0;
-    //kI = 0.0;
-    //kD = 0.0;
-    //kIz = 0.0;
-    //kFF = 0.0;
-    kMaxOutput = 0.98;
-    kMinOutput = -0.98;
-
-    // set PID coefficients
-    //hangWinchPIDController.setP(kP);
-    //climberPIDController.setI(kI);
-    //climberPIDController.setD(kD);
-    //climberPIDController.setIZone(kIz);
-    //climberPIDController.setFF(kFF);
-    //hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
-
     double rotations = -1.0;
 
     elevFrontLeaderMotor.setVoltage(downElevVelVolts * -leftJoystickValue);  //needs to be net positive because for elevator, -volts is up, +volts is down
 
-    //hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
+    // elevFrontLeaderPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
     // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
