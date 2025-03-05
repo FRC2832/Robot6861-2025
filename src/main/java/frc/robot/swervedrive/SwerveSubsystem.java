@@ -444,8 +444,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setMaximumSpeed(double maximumSpeedInMetersPerSecond, double maxRotationalVelocityRadiansPerSecond )
   {
-    maximumSpeed = maximumSpeedInMetersPerSecond;
-    maxRotationalVelocity = maxRotationalVelocityRadiansPerSecond;
+    // maximumSpeed = maximumSpeedInMetersPerSecond;
+    // maxRotationalVelocity = maxRotationalVelocityRadiansPerSecond;
     swerveDrive.setMaximumAllowableSpeeds(maximumSpeedInMetersPerSecond, maxRotationalVelocityRadiansPerSecond);
   }
 
@@ -455,9 +455,6 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void resetMaximumSpeed() 
   {
-    if (maximumSpeed == -1 || maxRotationalVelocity == -1) {
-      return; // max speeds not set yet (you shouldn't get here)
-    }
     swerveDrive.setMaximumAllowableSpeeds(maximumSpeed, maxRotationalVelocity);
   }
 
@@ -753,11 +750,7 @@ public class SwerveSubsystem extends SubsystemBase
 
   public void snailMode()
   {
-    if (maximumSpeed == -1 || maxRotationalVelocity == -1) {
-      return; // max speeds not set yet (you shouldn't get here)
-    }
     swerveDrive.setMaximumAllowableSpeeds(0.25*maximumSpeed, .25*maxRotationalVelocity);
-  
   }
 
   /**
@@ -766,9 +759,6 @@ public class SwerveSubsystem extends SubsystemBase
 
   public void turtleMode()
   {
-    if (maximumSpeed == -1 || maxRotationalVelocity == -1) {
-      return; // max speeds not set yet (you shouldn't get here)
-    }
     swerveDrive.setMaximumAllowableSpeeds(0.55*maximumSpeed, .55*maxRotationalVelocity);
   }
 

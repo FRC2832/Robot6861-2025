@@ -17,7 +17,7 @@ public class TurtleModeCmd extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.swerve = swerve;
-    addRequirements(swerve);
+    // addRequirements(swerve);
   }
 
   // Called when the command is initially scheduled.
