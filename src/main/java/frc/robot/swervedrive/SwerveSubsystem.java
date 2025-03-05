@@ -72,7 +72,10 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private final boolean             visionDriveTest     = false;
 
-  private DoubleSubscriber maxSpeed;
+  private DoubleSubscriber maxSpeed; // fake max speed (not used anymore)
+
+  private double maximumSpeed; // unit: meters per second
+  private double maxRotationalVelocity; // unit: radians per second
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -81,13 +84,15 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(File directory)
   {
-    maxSpeed = UtilFunctions.getSettingSub("Swerve/Max Speed", 5);
+    maxSpeed = UtilFunctions.getSettingSub("Swerve/Max Speed", 5); // not used
+    maximumSpeed = 2.5;
+    maxRotationalVelocity = Math.PI/2;
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(maxSpeed.get(),
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
                                                                   new Pose2d(new Translation2d(Meter.of(1),
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
@@ -111,7 +116,6 @@ public class SwerveSubsystem extends SubsystemBase
     }
     setupPathPlanner();
     setMotorBrake(true);
-
   }
   
 
@@ -168,10 +172,8 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
-              // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
-              // Rotation PID constants
+              new PIDConstants(2.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(3.0, 0.0, 0.0) // Rotation PID constants
           ),
           // The robot configuration
           config,
@@ -442,7 +444,21 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setMaximumSpeed(double maximumSpeedInMetersPerSecond, double maxRotationalVelocityRadiansPerSecond )
   {
+    maximumSpeed = maximumSpeedInMetersPerSecond;
+    maxRotationalVelocity = maxRotationalVelocityRadiansPerSecond;
     swerveDrive.setMaximumAllowableSpeeds(maximumSpeedInMetersPerSecond, maxRotationalVelocityRadiansPerSecond);
+  }
+
+  /**
+   * Resets the max speeds of the robot to what it was initialized with
+   * 
+   */
+  public void resetMaximumSpeed() 
+  {
+    if (maximumSpeed == -1 || maxRotationalVelocity == -1) {
+      return; // max speeds not set yet (you shouldn't get here)
+    }
+    swerveDrive.setMaximumAllowableSpeeds(maximumSpeed, maxRotationalVelocity);
   }
 
   /**
@@ -735,9 +751,12 @@ public class SwerveSubsystem extends SubsystemBase
    * this activates snail mode
    */
 
-  public void snailMode(double maximumSpeedInMetersPerSecond, double maxRotationalVelocityRadiansPerSecond)
+  public void snailMode()
   {
-    swerveDrive.setMaximumAllowableSpeeds(0.25*maximumSpeedInMetersPerSecond, .25*maxRotationalVelocityRadiansPerSecond);
+    if (maximumSpeed == -1 || maxRotationalVelocity == -1) {
+      return; // max speeds not set yet (you shouldn't get here)
+    }
+    swerveDrive.setMaximumAllowableSpeeds(0.25*maximumSpeed, .25*maxRotationalVelocity);
   
   }
 
@@ -745,10 +764,12 @@ public class SwerveSubsystem extends SubsystemBase
    * this activates turtle mode
    */
 
-  public void turtleMode(double maximumSpeedInMetersPerSecond, double maxRotationalVelocityRadiansPerSecond)
+  public void turtleMode()
   {
-    swerveDrive.setMaximumAllowableSpeeds(0.55*maximumSpeedInMetersPerSecond, .55*maxRotationalVelocityRadiansPerSecond);
-  
+    if (maximumSpeed == -1 || maxRotationalVelocity == -1) {
+      return; // max speeds not set yet (you shouldn't get here)
+    }
+    swerveDrive.setMaximumAllowableSpeeds(0.55*maximumSpeed, .55*maxRotationalVelocity);
   }
 
 

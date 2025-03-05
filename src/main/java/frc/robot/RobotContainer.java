@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -95,7 +96,7 @@ public class RobotContainer {
         winchPinSubSysObj = new WinchPinSubSys();
         hangWinchSubSysObj = new HangWinchSubSys();
         elevatorSubSysObj = new ElevatorSubSys();
-        coralSubSysObj = new CoralSubSys();
+        
 
         String swerveDirectory = "swerve/neo";
         //subsystems used in all robots
@@ -103,6 +104,7 @@ public class RobotContainer {
         frontLeds = new FrontLeds(6, 54);
         rearLeds = new RearLeds(frontLeds);
         coralSensor = new DigitalInput(9); 
+        coralSubSysObj = new CoralSubSys(coralSensor);
 
 
         // Boilerplate code to start the camera server
@@ -220,10 +222,10 @@ public class RobotContainer {
         // Hanging commands
         //new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
 
-        new Trigger(driverController::getBButtonPressed).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
-        new Trigger(driverController::getBButtonReleased).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+        new Trigger(operatorController::getYButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
-        //new Trigger(driverController::getXButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
+        // new Trigger(operatorController::getXButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
 
         // Elevator Commands
@@ -234,7 +236,7 @@ public class RobotContainer {
         //new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
         //new Trigger(driverController::getXButtonPressed).whileTrue(new ElevatorStopCmd(elevatorSubSysObj));
 
-        new Trigger(operatorController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
+        // new Trigger(operatorController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
         //new Trigger(operatorController::getYButtonReleased).whileTrue(new ElevatorDownCmd(elevatorSubSysObj));  moved to joystick
 
         //new Trigger(operatorController::getYButtonReleased).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
@@ -242,20 +244,24 @@ public class RobotContainer {
 
 
         //Turtle and snail mode TODO: fix this - method in command is not working
-        //new Trigger(() -> driverController.getLeftTriggerAxis() > 0.2 ).whileTrue(new TurtleModeCmd(swerveDrive));
-       // new Trigger(() -> driverController.getLeftTriggerAxis() > 0.6).whileTrue(new SnailModeCmd(swerveDrive));
+        new Trigger(() -> driverController.getLeftTriggerAxis() > 0.2).whileTrue(new TurtleModeCmd(swerveDrive));
+        new Trigger(() -> driverController.getLeftTriggerAxis() > 0.6).whileTrue(new SnailModeCmd(swerveDrive));
 
         //Coral Score Commands
         new Trigger(() -> driverController.getRightTriggerAxis() > 0.3).whileTrue(new CoralOutCmd(coralSubSysObj));
-        new Trigger(() -> driverController.getRightTriggerAxis() < 0.2).whileTrue(new CoralStopCmd(coralSubSysObj));
+        new Trigger(() -> driverController.getRightTriggerAxis() <= 0.3).whileTrue(new CoralStopCmd(coralSubSysObj));
 
         new Trigger(() -> operatorController.getRightTriggerAxis() > 0.3).whileTrue(new CoralOutCmd(coralSubSysObj));
-        new Trigger(() -> operatorController.getRightTriggerAxis() < 0.2).whileTrue(new CoralStopCmd(coralSubSysObj));
+        new Trigger(() -> operatorController.getRightTriggerAxis() <= 0.3).whileTrue(new CoralStopCmd(coralSubSysObj));
+
+
+        new Trigger(driverController::getRightBumperButton).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
         //new Trigger(driverController::getBButtonPressed).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
-        new Trigger(operatorController::getBButtonPressed).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        new Trigger(operatorController::getBButton).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
+        new Trigger(() -> driverController.getStartButtonPressed()).whileTrue(new InstantCommand(() -> swerveDrive.zeroGyroWithAlliance()));
 
     }
 

@@ -5,10 +5,14 @@
 package frc.robot.subsystem;
 
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkLowLevel.PeriodicFrame;
@@ -66,6 +70,23 @@ public class HangWinchSubSys extends SubsystemBase {
     hangWinchMotorConfig
       .apply(globalConfig);
 
+    hangWinchMotorConfig.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      // position pid
+      .p(0.1, ClosedLoopSlot.kSlot0)
+      .i(0.0, ClosedLoopSlot.kSlot0)
+      .d(0.0, ClosedLoopSlot.kSlot0)
+      .outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot0)
+      // velocity pid
+      .p(0, ClosedLoopSlot.kSlot1)
+      .i(0, ClosedLoopSlot.kSlot1)
+      .d(0, ClosedLoopSlot.kSlot1)
+      .velocityFF(0.0, ClosedLoopSlot.kSlot1)
+      .outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot1);
+    
+    hangWinchMotor.configure(hangWinchMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
 
     //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);  //to help reduce CANbus high utilization
     //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 100);  // TODO: might be able to go higher than 100....
@@ -100,23 +121,6 @@ public class HangWinchSubSys extends SubsystemBase {
 
   public void runHangWinchOutPrep() {
     // Uncomment this for development, testing or debugging work:
-    
-    // PID coefficients
-    kP = 0.1;
-    // kI = 0.0;
-    // kD = 0.0;
-    // kIz = 0.0;
-    // kFF = 0.0;
-    kMaxOutput = 0.98;
-    kMinOutput = -0.98;
-
-    // set PID coefficients
-    // hangWinchPIDController.setP(kP);
-    //climberPIDController.setI(kI);
-    //climberPIDController.setD(kD);
-    // climberPIDController.setIZone(kIz);
-   // climberPIDController.setFF(kFF);
-    // hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
     double rotations = 25.0;  
 
@@ -137,26 +141,9 @@ public class HangWinchSubSys extends SubsystemBase {
     // Uncomment this for development, testing or debugging work:
     //SmartDashboard.putNumber("Hang winch encoder out", hangWinchEncoder.getPosition());
 
-    // PID coefficients
-    kP = 0.1;
-    // kI = 0.0;
-    // kD = 0.0;
-    // kIz = 0.0;
-    // kFF = 0.0;
-    kMaxOutput = 0.98;
-    kMinOutput = -0.98;
-
-    // set PID coefficients
-    // hangWinchPIDController.setP(kP);
-    //climberPIDController.setI(kI);
-    //climberPIDController.setD(kD);
-    // climberPIDController.setIZone(kIz);
-   // climberPIDController.setFF(kFF);
-    // hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
-
     double rotations = -125.0;  //was 50.0
 
-    hangWinchPIDController.setReference(rotations, ControlType.kPosition);
+    hangWinchPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     //hangWinchMotor.setVoltage(outWinchVelVolts);
 
      // Uncomment these for development, testing or debugging work:
@@ -173,23 +160,6 @@ public class HangWinchSubSys extends SubsystemBase {
 
   public void runHangWinchIn() {
     // Uncomment this for development, testing or debugging work:
-    
-    // PID coefficients
-    kP = 0.1;
-    //kI = 0.0;
-    //kD = 0.0;
-    //kIz = 0.0;
-    //kFF = 0.0;
-    kMaxOutput = 0.98;
-    kMinOutput = -0.98;
-
-    // set PID coefficients
-    //hangWinchPIDController.setP(kP);
-    //climberPIDController.setI(kI);
-    //climberPIDController.setD(kD);
-    //climberPIDController.setIZone(kIz);
-    //climberPIDController.setFF(kFF);
-    //hangWinchPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
     double rotations = -1.0;
 

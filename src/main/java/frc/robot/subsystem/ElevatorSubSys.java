@@ -185,11 +185,13 @@ public class ElevatorSubSys extends SubsystemBase {
     double rotations = 15.0;  
 
     // hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
-    if (elevFrontLeaderEncoder.getPosition() > 2) { // TODO: test value
-      elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
-    } else {
-      elevFrontLeaderMotor.setVoltage(0);
-    }
+    //if (elevFrontLeaderEncoder.getPosition() > 2) { // TODO: test value
+    
+    elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
+
+    //} else {
+      //elevFrontLeaderMotor.setVoltage(0);
+    //}
     
 
      // Uncomment these for development, testing or debugging work:
