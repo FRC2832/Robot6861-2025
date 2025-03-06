@@ -20,6 +20,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -72,7 +73,10 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private final boolean             visionDriveTest     = false;
 
-  private DoubleSubscriber maxSpeed;
+  private DoubleSubscriber maxSpeed; // fake max speed (not used anymore)
+
+  private double maximumSpeed; // unit: meters per second
+  private double maxRotationalVelocity; // unit: radians per second
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -81,13 +85,15 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(File directory)
   {
-    maxSpeed = UtilFunctions.getSettingSub("Swerve/Max Speed", 5);
+    maxSpeed = UtilFunctions.getSettingSub("Swerve/Max Speed", 5); // not used
+    maximumSpeed = 2.5;
+    maxRotationalVelocity = Math.PI/2;
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(maxSpeed.get(),
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
                                                                   new Pose2d(new Translation2d(Meter.of(1),
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
@@ -95,20 +101,29 @@ public class SwerveSubsystem extends SubsystemBase
     {
       throw new RuntimeException(e);
     }
+
+    swerveDrive.swerveController.addSlewRateLimiters(
+      new SlewRateLimiter(0.1), // x
+      new SlewRateLimiter(0.1), // y
+      new SlewRateLimiter(0.2) // angle
+    );
+
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
-    swerveDrive.setAngularVelocityCompensation(true,
+    swerveDrive.setAngularVelocityCompensation(true,  //TODO: set back to true?
                                                true,
-                                               0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
+                                               0.1); //TODO: could this help with the backright module issue???  Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
     swerveDrive.setModuleEncoderAutoSynchronize(false,
                                                 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
     swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
+    
     if (visionDriveTest)
     {
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
+    setMotorBrake(true);
   }
   
 
@@ -125,6 +140,7 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void simulationPeriodic()
   {
+
   }
 
   /**
@@ -164,10 +180,8 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
-              // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
-              // Rotation PID constants
+              new PIDConstants(2.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(3.0, 0.0, 0.0) // Rotation PID constants
           ),
           // The robot configuration
           config,
@@ -388,7 +402,7 @@ public class SwerveSubsystem extends SubsystemBase
     return SwerveDriveTest.generateSysIdCommand(
         SwerveDriveTest.setDriveSysIdRoutine(
             new Config(),
-            this, swerveDrive, 12),
+            this, swerveDrive, 12, false),
         3.0, 5.0, 3.0);
   }
 
@@ -438,7 +452,18 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setMaximumSpeed(double maximumSpeedInMetersPerSecond, double maxRotationalVelocityRadiansPerSecond )
   {
+    // maximumSpeed = maximumSpeedInMetersPerSecond;
+    // maxRotationalVelocity = maxRotationalVelocityRadiansPerSecond;
     swerveDrive.setMaximumAllowableSpeeds(maximumSpeedInMetersPerSecond, maxRotationalVelocityRadiansPerSecond);
+  }
+
+  /**
+   * Resets the max speeds of the robot to what it was initialized with
+   * 
+   */
+  public void resetMaximumSpeed() 
+  {
+    swerveDrive.setMaximumAllowableSpeeds(maximumSpeed, maxRotationalVelocity);
   }
 
   /**
@@ -725,6 +750,26 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.lockPose();
   }
+
+
+  /**
+   * this activates snail mode
+   */
+
+  public void snailMode()
+  {
+    swerveDrive.setMaximumAllowableSpeeds(0.25*maximumSpeed, .25*maxRotationalVelocity);
+  }
+
+  /**
+   * this activates turtle mode
+   */
+
+  public void turtleMode()
+  {
+    swerveDrive.setMaximumAllowableSpeeds(0.55*maximumSpeed, .55*maxRotationalVelocity);
+  }
+
 
   /**
    * Gets the current pitch angle of the robot, as reported by the imu.
