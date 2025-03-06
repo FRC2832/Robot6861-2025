@@ -96,11 +96,11 @@ public class ElevatorSubSys extends SubsystemBase {
     elevBackFollowerEncoder.setPosition(0.0);
 
 
-    upElevFrontLeaderVelPct = -21.0 / 100.0;
+    upElevFrontLeaderVelPct = -22.0 / 100.0; // was -21.0
     upElevVelVolts = upElevFrontLeaderVelPct * 12.0;
-    downElevFrontLeaderVelPct = -0.5 / 100.0;  //needs small negative value to counteract effect of gravity. kG = 1.2 volts
+    downElevFrontLeaderVelPct = -0.2 / 100.0;  //was -0.5 needs small negative value to counteract effect of gravity. kG = 1.2 volts
     downElevVelVolts = downElevFrontLeaderVelPct * 12.0;
-    holdElevFrontLeaderVelPct = -10.0 / 100.0;
+    holdElevFrontLeaderVelPct = -11.0 / 100.0; // was -10
     holdElevVelVolts = holdElevFrontLeaderVelPct * 12.0;
     stopElevVelPct = 0.0 / 100.0;
     stopElevVelVolts = stopElevVelPct * 12.0;
@@ -119,7 +119,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevUpJoystick(double leftJoystickValue) {
 
-    double rotations = 5.0;  
+    //double rotations = 5.0;  
 
     //elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts * -leftJoystickValue);  //needs to be net negative because -volts is up for elevator
@@ -127,16 +127,16 @@ public class ElevatorSubSys extends SubsystemBase {
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
     //SmartDashboard.putNumber("ProcessVariable", climberEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
-    SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
+   // SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+    //SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+   // SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
    
   }
 
   public void runElevHold() {
 
-    double rotations = 15.0;  
+    //double rotations = 15.0;  
 
     // elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     //if (elevFrontLeaderEncoder.getPosition() > 2) { // TODO: test value
@@ -151,10 +151,10 @@ public class ElevatorSubSys extends SubsystemBase {
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
     //SmartDashboard.putNumber("ProcessVariable", climberEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
-    SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+    //SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
    
   }
 
@@ -178,11 +178,11 @@ public class ElevatorSubSys extends SubsystemBase {
        
 
      // Uncomment these for development, testing or debugging work:
-    SmartDashboard.putNumber("SetPoint", rotations);
-    SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
-    SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("SetPoint", rotations);
+    //martDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+   // SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
    
 
    
@@ -192,7 +192,7 @@ public class ElevatorSubSys extends SubsystemBase {
   public void runElevUp() {
     // Uncomment this for development, testing or debugging work:
    
-    double rotations = 5.0;  //should be around 15
+    //double rotations = 5.0;  //should be around 15
 
    // elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts);
@@ -200,10 +200,10 @@ public class ElevatorSubSys extends SubsystemBase {
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
     //SmartDashboard.putNumber("ProcessVariable", climberEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
-    SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+   // SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+   // SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
+   // SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
    
   }
 
@@ -225,11 +225,11 @@ public class ElevatorSubSys extends SubsystemBase {
        
 
      // Uncomment these for development, testing or debugging work:
-    SmartDashboard.putNumber("SetPoint", rotations);
-    SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
-    SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
+   // SmartDashboard.putNumber("SetPoint", rotations);
+    //SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+   // SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+  //  SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
    
 
    
@@ -240,7 +240,7 @@ public class ElevatorSubSys extends SubsystemBase {
   public void runElevDown(double leftJoystickValue) {
     // Uncomment this for development, testing or debugging work:
 
-    double rotations = -1.0;
+    //double rotations = -1.0;
 
     elevFrontLeaderMotor.setVoltage(downElevVelVolts * -leftJoystickValue);  //needs to be net positive because for elevator, -volts is up, +volts is down
 
@@ -248,7 +248,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
     // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
-    SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    //SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
 
   }
 
@@ -266,7 +266,7 @@ public class ElevatorSubSys extends SubsystemBase {
     // This method will be called once per scheduler run
     // Uncomment this for development, testing or debugging work:
     SmartDashboard.putNumber("Elevator Front Leader encoder", elevFrontLeaderEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator Front Leader percent", elevFrontLeaderMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Elevator Front Leader percent", elevFrontLeaderMotor.getAppliedOutput());
 
   }
 }

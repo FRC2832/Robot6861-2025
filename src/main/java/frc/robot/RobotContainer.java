@@ -125,7 +125,7 @@ public class RobotContainer {
             swerveDrive.resetOdometry(new Pose2d(16.28, 4.03,Rotation2d.fromDegrees(180)));
         }
         else {
-            swerveDrive.setMaximumSpeed(2.5, Math.PI/2); //maxspeed of robot
+            swerveDrive.setMaximumSpeed(2.75, Math.PI/2); //maxspeed of robot
         }
 
         //vision = new Vision(swerveDrive);
@@ -219,9 +219,9 @@ public class RobotContainer {
   
 
         //Prep for hanging commands
-        new Trigger(operatorController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
-        new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
-        new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutPrepCmd(hangWinchSubSysObj));
+        //new Trigger(operatorController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
+       // new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
+       // new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutPrepCmd(hangWinchSubSysObj));
 
        // new Trigger(driverController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
 
@@ -229,10 +229,10 @@ public class RobotContainer {
         // Hanging commands
         //new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
 
-        new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
-        new Trigger(operatorController::getYButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        //new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+       // new Trigger(operatorController::getYButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
-        new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
+        //new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
 
         // Elevator Commands

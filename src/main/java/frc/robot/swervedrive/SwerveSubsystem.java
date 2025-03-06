@@ -86,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveSubsystem(File directory)
   {
     maxSpeed = UtilFunctions.getSettingSub("Swerve/Max Speed", 5); // not used
-    maximumSpeed = 2.5;
+    maximumSpeed = 2.75;
     maxRotationalVelocity = Math.PI/2;
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
