@@ -36,9 +36,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.CoralOutAutonCmd;
 import frc.robot.commands.CoralOutCmd;
 import frc.robot.commands.CoralReverseCmd;
 import frc.robot.commands.CoralStopCmd;
+import frc.robot.commands.ElevatorBottomCmd;
 import frc.robot.commands.ElevatorDownCmd;
 import frc.robot.commands.ElevatorHoldCmd;
 import frc.robot.commands.ElevatorL4Cmd;
@@ -159,8 +161,12 @@ public class RobotContainer {
         // Register Named Commands for PathPlanner
         //NamedCommands.registerCommand("flashRed", new LightningFlash(leds, Color.kFirstRed));
         //NamedCommands.registerCommand("flashBlue", new LightningFlash(leds, Color.kFirstBlue));
-        NamedCommands.registerCommand("ScorePieceL1", new WaitCommand(1));
-        NamedCommands.registerCommand("GetFromHP", new WaitCommand(2));
+        // NamedCommands.registerCommand("ScorePieceL1", new WaitCommand(1));
+        // NamedCommands.registerCommand("GetFromHP", new WaitCommand(2));
+        NamedCommands.registerCommand("RaiseElevL4", new ElevatorL4Cmd(elevatorSubSysObj));
+        NamedCommands.registerCommand("LowerElevator", new ElevatorBottomCmd(elevatorSubSysObj));
+        NamedCommands.registerCommand("Score", new CoralOutAutonCmd(coralSubSysObj));
+
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -204,6 +210,7 @@ public class RobotContainer {
         //frontLeds.setDefaultCommand(new ShowTargetInfo(frontLeds, frontCamera, Color.fromHSV(75, 255, 255)));
        // rearLeds.setDefaultCommand(new ShowTargetInfo(rearLeds, frontCamera, Color.fromHSV(75, 255, 255)));
         //rearLeds.setDefaultCommand(new TestLeds(rearLeds));
+        hangWinchSubSysObj.setDefaultCommand(new WinchStopCmd(hangWinchSubSysObj));
         elevatorSubSysObj.setDefaultCommand(new ElevatorHoldCmd(elevatorSubSysObj));
 
         //rampSubsystem.setDefaultCommand(rampSubsystem.runMotor(() -> (driverController.getRightTriggerAxis() * 0.35) - (driverController.getLeftTriggerAxis() * 0.35)));
@@ -225,7 +232,7 @@ public class RobotContainer {
         new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
         new Trigger(operatorController::getYButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
-        // new Trigger(operatorController::getXButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
+        new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
 
         // Elevator Commands

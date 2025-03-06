@@ -221,6 +221,11 @@ public class CoralSubSys extends SubsystemBase {
   }
 
 
+  public boolean isCoralSeen() {
+    return !coralSensor.get();
+  }
+
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

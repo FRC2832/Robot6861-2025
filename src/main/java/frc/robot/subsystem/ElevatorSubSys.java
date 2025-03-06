@@ -61,8 +61,9 @@ public class ElevatorSubSys extends SubsystemBase {
     SparkMaxConfig elevBackFollowerMotorConfig = new SparkMaxConfig();
 
     globalConfig
-      .smartCurrentLimit(70) // TODO: increase/change number later
-      .idleMode(IdleMode.kBrake);  
+      .smartCurrentLimit(70) 
+      .idleMode(IdleMode.kBrake); 
+
 
     elevFrontLeaderMotorConfig
       .apply(globalConfig)
@@ -162,7 +163,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL4() {
 
-    double rotations = -15.0;  // TODO: increase to 15 once working better
+    double rotations = -22.0;
 
     elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
@@ -207,6 +208,34 @@ public class ElevatorSubSys extends SubsystemBase {
   }
 
  
+  public void runElevBottom() {
+
+    double rotations = -10.0;
+
+    elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
+
+    // Voltage open loop control
+    // if (elevFrontLeaderEncoder.getPosition() > 4.5 || elevFrontLeaderEncoder.getPosition() < 6.0) { //TODO - change to 14.5 and 16.0 when working 
+       // elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
+   // } else {
+
+       // elevFrontLeaderMotor.setVoltage(upElevVelVolts);
+    //}
+       
+
+     // Uncomment these for development, testing or debugging work:
+    SmartDashboard.putNumber("SetPoint", rotations);
+    SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+    SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
+   
+
+   
+  }
+
+
 
   public void runElevDown(double leftJoystickValue) {
     // Uncomment this for development, testing or debugging work:

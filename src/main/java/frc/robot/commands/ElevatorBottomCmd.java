@@ -5,19 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.ElevatorSubSys;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorL4Cmd extends Command {
-  /** Creates a new ElevatorL4Cmd. */
+public class ElevatorBottomCmd extends Command {
+  /** Creates a new ElevatorDownCmd. */
 
   private final ElevatorSubSys elevatorSubSysObj;
   private final Timer timer = new Timer();
 
-  public ElevatorL4Cmd(ElevatorSubSys elevatorSubSys) {
+  public ElevatorBottomCmd(ElevatorSubSys elevatorSubSys) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevatorSubSysObj = elevatorSubSys;
+    //this.operatorController = operatorController;
     addRequirements(elevatorSubSysObj);
   }
 
@@ -31,7 +33,7 @@ public class ElevatorL4Cmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevatorSubSysObj.runElevL4();
+    elevatorSubSysObj.runElevBottom();
   }
 
   // Called once the command ends or is interrupted.
@@ -44,6 +46,6 @@ public class ElevatorL4Cmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= 2;
+    return timer.get() >= 3;
   }
 }

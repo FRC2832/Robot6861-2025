@@ -4,21 +4,22 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystem.ElevatorSubSys;
+import frc.robot.subsystem.CoralSubSys;
+import edu.wpi.first.wpilibj.Timer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorL4Cmd extends Command {
-  /** Creates a new ElevatorL4Cmd. */
-
-  private final ElevatorSubSys elevatorSubSysObj;
+public class CoralOutAutonCmd extends Command {
+  /** Creates a new CoralOutCmd. */
+  private final CoralSubSys coralSubSysObj;
   private final Timer timer = new Timer();
+  private final Timer bufferTimer = new Timer();
+  private boolean coralPassed;
 
-  public ElevatorL4Cmd(ElevatorSubSys elevatorSubSys) {
+  public CoralOutAutonCmd(CoralSubSys coralSubSys) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevatorSubSysObj = elevatorSubSys;
-    addRequirements(elevatorSubSysObj);
+    this.coralSubSysObj = coralSubSys;
+    addRequirements(coralSubSysObj);
   }
 
   // Called when the command is initially scheduled.
@@ -26,24 +27,35 @@ public class ElevatorL4Cmd extends Command {
   public void initialize() {
     timer.reset();
     timer.start();
+    bufferTimer.reset();
+    coralPassed = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevatorSubSysObj.runElevL4();
+      coralSubSysObj.runCoralMotorOut();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    coralSubSysObj.stopCoral();
     timer.stop();
-    elevatorSubSysObj.stopElevator();
+    bufferTimer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= 2;
+    // if (!coralPassed && !coralSubSysObj.isCoralSeen()) {
+    //   coralPassed = true;
+    //   bufferTimer.start();
+    //   return false;
+    // }
+    // if (coralPassed) {
+    //   return bufferTimer.get() >= 1;
+    // }
+    return timer.get() >= 3;
   }
 }
