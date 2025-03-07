@@ -125,7 +125,7 @@ public class RobotContainer {
             swerveDrive.resetOdometry(new Pose2d(16.28, 4.03,Rotation2d.fromDegrees(180)));
         }
         else {
-            swerveDrive.setMaximumSpeed(2.75, Math.PI/2); //maxspeed of robot
+            swerveDrive.setMaximumSpeed(3.0, Math.PI/2); //maxspeed of robot
         }
 
         //vision = new Vision(swerveDrive);

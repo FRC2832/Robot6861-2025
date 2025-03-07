@@ -81,7 +81,7 @@ public class ElevatorSubSys extends SubsystemBase {
       .p(0.09, ClosedLoopSlot.kSlot0)
       .i(0.0, ClosedLoopSlot.kSlot0)
       .d(0.0, ClosedLoopSlot.kSlot0)
-      .outputRange(-0.3, 0.3, ClosedLoopSlot.kSlot0);
+      .outputRange(-0.35, 0.3, ClosedLoopSlot.kSlot0); //was 0.3
 
 
     
@@ -163,7 +163,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL4() {
 
-    double rotations = -22.0;
+    double rotations = -23.0;
 
     elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
