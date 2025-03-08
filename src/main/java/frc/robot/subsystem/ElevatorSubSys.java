@@ -81,7 +81,7 @@ public class ElevatorSubSys extends SubsystemBase {
       .p(0.09, ClosedLoopSlot.kSlot0)
       .i(0.0, ClosedLoopSlot.kSlot0)
       .d(0.0, ClosedLoopSlot.kSlot0)
-      .outputRange(-0.35, 0.3, ClosedLoopSlot.kSlot0); //was 0.3
+      .outputRange(-0.4, 0.3, ClosedLoopSlot.kSlot0); //was 0.3
 
 
     
@@ -96,7 +96,7 @@ public class ElevatorSubSys extends SubsystemBase {
     elevBackFollowerEncoder.setPosition(0.0);
 
 
-    upElevFrontLeaderVelPct = -22.0 / 100.0; // was -21.0
+    upElevFrontLeaderVelPct = -35.0 / 100.0; // was -21.0
     upElevVelVolts = upElevFrontLeaderVelPct * 12.0;
     downElevFrontLeaderVelPct = -0.2 / 100.0;  //was -0.5 needs small negative value to counteract effect of gravity. kG = 1.2 volts
     downElevVelVolts = downElevFrontLeaderVelPct * 12.0;

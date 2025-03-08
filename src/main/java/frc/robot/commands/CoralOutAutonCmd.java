@@ -28,7 +28,7 @@ public class CoralOutAutonCmd extends Command {
     timer.reset();
     timer.start();
     bufferTimer.reset();
-    coralPassed = false;
+    //coralPassed = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.

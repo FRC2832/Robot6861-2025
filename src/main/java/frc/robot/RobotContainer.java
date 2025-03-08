@@ -125,7 +125,7 @@ public class RobotContainer {
             swerveDrive.resetOdometry(new Pose2d(16.28, 4.03,Rotation2d.fromDegrees(180)));
         }
         else {
-            swerveDrive.setMaximumSpeed(3.0, Math.PI/2); //maxspeed of robot
+            swerveDrive.setMaximumSpeed(3.4, Math.PI/1.30); //maxspeed of robot
         }
 
         //vision = new Vision(swerveDrive);
@@ -164,8 +164,9 @@ public class RobotContainer {
         // NamedCommands.registerCommand("ScorePieceL1", new WaitCommand(1));
         // NamedCommands.registerCommand("GetFromHP", new WaitCommand(2));
         NamedCommands.registerCommand("RaiseElevL4", new ElevatorL4Cmd(elevatorSubSysObj));
-        NamedCommands.registerCommand("LowerElevator", new ElevatorBottomCmd(elevatorSubSysObj));
         NamedCommands.registerCommand("Score", new CoralOutAutonCmd(coralSubSysObj));
+        NamedCommands.registerCommand("LowerElevator", new ElevatorBottomCmd(elevatorSubSysObj));
+        
 
 
         // Build an auto chooser. This will use Commands.none() as the default option.
@@ -219,8 +220,8 @@ public class RobotContainer {
   
 
         //Prep for hanging commands
-        //new Trigger(operatorController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
-       // new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
+        new Trigger(operatorController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
+        new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
        // new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutPrepCmd(hangWinchSubSysObj));
 
        // new Trigger(driverController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
@@ -229,10 +230,10 @@ public class RobotContainer {
         // Hanging commands
         //new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
 
-        //new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
-       // new Trigger(operatorController::getYButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+        new Trigger(operatorController::getYButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
-        //new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
+        new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
 
         // Elevator Commands

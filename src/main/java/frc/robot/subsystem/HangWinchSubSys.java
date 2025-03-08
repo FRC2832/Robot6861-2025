@@ -141,7 +141,7 @@ public class HangWinchSubSys extends SubsystemBase {
     // Uncomment this for development, testing or debugging work:
     //SmartDashboard.putNumber("Hang winch encoder out", hangWinchEncoder.getPosition());
 
-    double rotations = -400.0;  //was 50.0
+    double rotations = -325.0;  
 
     hangWinchPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     //hangWinchMotor.setVoltage(outWinchVelVolts);
@@ -161,7 +161,7 @@ public class HangWinchSubSys extends SubsystemBase {
   public void runHangWinchIn() {
     // Uncomment this for development, testing or debugging work:
 
-    double rotations = -1.0;
+    double rotations = 200.0;
 
     hangWinchMotor.setVoltage(inWinchVelVolts);
 
