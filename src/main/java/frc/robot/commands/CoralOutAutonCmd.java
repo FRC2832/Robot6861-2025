@@ -28,7 +28,7 @@ public class CoralOutAutonCmd extends Command {
     timer.reset();
     timer.start();
     bufferTimer.reset();
-    coralPassed = false;
+    //coralPassed = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,6 +56,6 @@ public class CoralOutAutonCmd extends Command {
     // if (coralPassed) {
     //   return bufferTimer.get() >= 1;
     // }
-    return timer.get() >= 3;
+    return timer.get() >= 5;
   }
 }
