@@ -98,7 +98,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
     upElevFrontLeaderVelPct = -35.0 / 100.0; // was -21.0
     upElevVelVolts = upElevFrontLeaderVelPct * 12.0;
-    downElevFrontLeaderVelPct = -0.2 / 100.0;  //was -0.5 needs small negative value to counteract effect of gravity. kG = 1.2 volts
+    downElevFrontLeaderVelPct = -0.25 / 100.0;  //was -0.5 needs small negative value to counteract effect of gravity. kG = 1.2 volts
     downElevVelVolts = downElevFrontLeaderVelPct * 12.0;
     holdElevFrontLeaderVelPct = -11.0 / 100.0; // was -10
     holdElevVelVolts = holdElevFrontLeaderVelPct * 12.0;
@@ -123,14 +123,6 @@ public class ElevatorSubSys extends SubsystemBase {
 
     //elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts * -leftJoystickValue);  //needs to be net negative because -volts is up for elevator
-
-     // Uncomment these for development, testing or debugging work:
-    //SmartDashboard.putNumber("SetPoint", rotations);
-    //SmartDashboard.putNumber("ProcessVariable", climberEncoder.getPosition());
-   // SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
-    //SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
-   // SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
-    //SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
    
   }
 
@@ -168,14 +160,26 @@ public class ElevatorSubSys extends SubsystemBase {
     elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
 
-    // Voltage open loop control
-    // if (elevFrontLeaderEncoder.getPosition() > 4.5 || elevFrontLeaderEncoder.getPosition() < 6.0) { //TODO - change to 14.5 and 16.0 when working 
-       // elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
-   // } else {
 
-       // elevFrontLeaderMotor.setVoltage(upElevVelVolts);
-    //}
-       
+     // Uncomment these for development, testing or debugging work:
+    //SmartDashboard.putNumber("SetPoint", rotations);
+    //martDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+   // SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
+   
+
+   
+  }
+
+
+  public void runElevL2() {
+
+    double rotations = -7.0;
+
+    elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
+
 
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);

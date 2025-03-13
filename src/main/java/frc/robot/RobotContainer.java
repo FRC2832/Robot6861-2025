@@ -43,6 +43,7 @@ import frc.robot.commands.CoralStopCmd;
 import frc.robot.commands.ElevatorBottomCmd;
 import frc.robot.commands.ElevatorDownCmd;
 import frc.robot.commands.ElevatorHoldCmd;
+import frc.robot.commands.ElevatorL2Cmd;
 import frc.robot.commands.ElevatorL4Cmd;
 import frc.robot.commands.ElevatorStopCmd;
 import frc.robot.commands.ElevatorUpCmd;
@@ -164,6 +165,9 @@ public class RobotContainer {
         // NamedCommands.registerCommand("ScorePieceL1", new WaitCommand(1));
         // NamedCommands.registerCommand("GetFromHP", new WaitCommand(2));
         NamedCommands.registerCommand("RaiseElevL4", new ElevatorL4Cmd(elevatorSubSysObj));
+
+        NamedCommands.registerCommand("RaiseElevL2", new ElevatorL2Cmd(elevatorSubSysObj));
+
         NamedCommands.registerCommand("Score", new CoralOutAutonCmd(coralSubSysObj));
         NamedCommands.registerCommand("LowerElevator", new ElevatorBottomCmd(elevatorSubSysObj));
         
@@ -220,8 +224,9 @@ public class RobotContainer {
   
 
         //Prep for hanging commands
-        new Trigger(operatorController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
-        new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
+        //TODO: put this on button next to left joystick - not sure if that is start or back. I think it's back   new Trigger(operatorController::getButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
+        //TODO: change winch out and ramp down and ramp up as sequential commands to Select button  - new RampDownCmd(winchPinSubSysObj)
+       //TODO: put this on as sequential command attached to select or start button?  new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
        // new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutPrepCmd(hangWinchSubSysObj));
 
        // new Trigger(driverController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
@@ -238,6 +243,9 @@ public class RobotContainer {
 
         // Elevator Commands
         new Trigger(() -> operatorController.getPOV() == 0).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
+        //TODO: test that this works as instant command with A button pressed while true....
+        new Trigger(() -> operatorController.getAButtonPressed()).whileTrue(new ElevatorL2Cmd(elevatorSubSysObj));
+        
         new Trigger(() -> operatorController.getLeftY() < -0.075).whileTrue(new ElevatorUpJoystickCmd(elevatorSubSysObj, operatorController));
        // new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
         new Trigger(() -> operatorController.getLeftY() > 0.075).whileTrue(new ElevatorDownCmd(elevatorSubSysObj, operatorController));
