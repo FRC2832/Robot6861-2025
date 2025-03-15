@@ -56,6 +56,6 @@ public class CoralOutAutonCmd extends Command {
     // if (coralPassed) {
     //   return bufferTimer.get() >= 1;
     // }
-    return timer.get() >= 5;
+    return timer.get() >= 3;
   }
 }

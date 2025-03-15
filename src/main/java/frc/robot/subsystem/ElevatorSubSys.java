@@ -175,9 +175,13 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL2() {
 
-    double rotations = -7.0;
+    double rotations = -6.0;
 
-    elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    elevFrontLeaderPIDController.setReference(
+                                rotations, 
+                                ControlType.kMAXMotionPositionControl, 
+                                ClosedLoopSlot.kSlot0,
+                                -0.8);  //actually need like 1.2 but testing low for now
 
 
 

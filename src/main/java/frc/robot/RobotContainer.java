@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -218,6 +219,16 @@ public class RobotContainer {
         hangWinchSubSysObj.setDefaultCommand(new WinchStopCmd(hangWinchSubSysObj));
         elevatorSubSysObj.setDefaultCommand(new ElevatorHoldCmd(elevatorSubSysObj));
 
+        SequentialCommandGroup climbPrepGroup = new SequentialCommandGroup(
+                new WinchOutCmd(hangWinchSubSysObj), 
+                new RampDownCmd(winchPinSubSysObj)
+        );
+        climbPrepGroup.setName("climbPrepGroup");
+
+
+
+
+
         //rampSubsystem.setDefaultCommand(rampSubsystem.runMotor(() -> (driverController.getRightTriggerAxis() * 0.35) - (driverController.getLeftTriggerAxis() * 0.35)));
 
         // Trigger driverRightTrigger = driverController.rightTrigger();
@@ -235,8 +246,10 @@ public class RobotContainer {
         // Hanging commands
         //new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
 
-        new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
-        new Trigger(operatorController::getYButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        //new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+        new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.2).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        new Trigger(() -> operatorController.getLeftBumperButtonPressed()).whileTrue(climbPrepGroup);
+
 
         new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
@@ -272,11 +285,11 @@ public class RobotContainer {
         new Trigger(() -> operatorController.getRightTriggerAxis() <= 0.3).whileTrue(new CoralStopCmd(coralSubSysObj));
 
 
-        new Trigger(driverController::getRightBumperButton).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        new Trigger(() -> driverController.getRightBumperButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
         //new Trigger(driverController::getBButtonPressed).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
-        new Trigger(operatorController::getBButton).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        new Trigger(() -> operatorController.getBButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
         new Trigger(() -> driverController.getStartButtonPressed()).whileTrue(new InstantCommand(() -> swerveDrive.zeroGyroWithAlliance()));
 
