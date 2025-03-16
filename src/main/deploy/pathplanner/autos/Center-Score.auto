@@ -13,7 +13,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Score"
+            "name": "RaiseElevl2"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevHold"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LowerElevator"
           }
         }
       ]

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.HangWinchSubSys;
 
@@ -12,6 +13,7 @@ import frc.robot.subsystem.HangWinchSubSys;
 public class WinchInCmd extends Command {
   /** Creates a new WinchInCmd. */
   private final HangWinchSubSys hangWinchSubSysObj;
+  private final Timer timer = new Timer();
 
   public WinchInCmd(HangWinchSubSys hangWinchSubSys) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -21,7 +23,10 @@ public class WinchInCmd extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.reset();
+    timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -32,12 +37,13 @@ public class WinchInCmd extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    timer.stop();
     hangWinchSubSysObj.endHangWinchMotor();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return timer.get() >= 4.0;  //was 3.5
   }
 }

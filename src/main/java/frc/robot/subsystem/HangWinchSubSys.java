@@ -53,6 +53,8 @@ public class HangWinchSubSys extends SubsystemBase {
     private final double outWinchVelPct;
     private final double outWinchVelVolts;
 
+    private boolean isHangWinchOut = false;
+
 
 
 
@@ -64,7 +66,7 @@ public class HangWinchSubSys extends SubsystemBase {
     SparkMaxConfig hangWinchMotorConfig = new SparkMaxConfig();
 
     globalConfig
-      .smartCurrentLimit(60);
+      .smartCurrentLimit(80);
      // .idleMode(IdleMode.kBrake); //TODO: look up idlemode in 2025 Revlib
 
     hangWinchMotorConfig
@@ -73,16 +75,17 @@ public class HangWinchSubSys extends SubsystemBase {
     hangWinchMotorConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       // position pid
-      .p(0.1, ClosedLoopSlot.kSlot0)
+      .p(0.45, ClosedLoopSlot.kSlot0)
       .i(0.0, ClosedLoopSlot.kSlot0)
       .d(0.0, ClosedLoopSlot.kSlot0)
-      .outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot0)
+      .outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot0);
+
       // velocity pid
-      .p(0, ClosedLoopSlot.kSlot1)
-      .i(0, ClosedLoopSlot.kSlot1)
-      .d(0, ClosedLoopSlot.kSlot1)
-      .velocityFF(0.0, ClosedLoopSlot.kSlot1)
-      .outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot1);
+      //.p(0, ClosedLoopSlot.kSlot1)
+      //.i(0, ClosedLoopSlot.kSlot1)
+      //.d(0, ClosedLoopSlot.kSlot1)
+      //.velocityFF(0.0, ClosedLoopSlot.kSlot1)
+      //.outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot1);
     
     hangWinchMotor.configure(hangWinchMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -98,7 +101,7 @@ public class HangWinchSubSys extends SubsystemBase {
    // hangWinchMotor.setSmartCurrentLimit(Constants.HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT);
    // hangWinchMotor.setSecondaryCurrentLimit(Constants.HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT);
 
-    inWinchVelPct = 25.0 / 100.0;
+    inWinchVelPct = 60.0 / 100.0;
     inWinchVelVolts = inWinchVelPct * 12.0;
     outWinchVelPct = -45.0 / 100.0;
     outWinchVelVolts = outWinchVelPct * 12.0;
@@ -122,10 +125,10 @@ public class HangWinchSubSys extends SubsystemBase {
   public void runHangWinchOutPrep() {
     // Uncomment this for development, testing or debugging work:
 
-    double rotations = 25.0;  
+    //double rotations = 25.0;  
 
-    // hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
-    hangWinchMotor.setVoltage(outWinchVelVolts);
+    //hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
+    //hangWinchMotor.setVoltage(outWinchVelVolts);
 
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
@@ -133,7 +136,7 @@ public class HangWinchSubSys extends SubsystemBase {
     //SmartDashboard.putNumber("Hang Winch Motor Speed", hangWinchEncoder.getVelocity());
     //SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
 
-  }
+ }
 
 
 
@@ -141,9 +144,15 @@ public class HangWinchSubSys extends SubsystemBase {
     // Uncomment this for development, testing or debugging work:
     //SmartDashboard.putNumber("Hang winch encoder out", hangWinchEncoder.getPosition());
 
-    double rotations = -250.0;  
+    double rotations = -325.0;  
 
     hangWinchPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
+    //if (hangWinchEncoder.getPosition() > -250.0) {  // winch starts at 0 and extends to -250 encoder counts
+      //isHangWinchOut = false;
+    //} else {
+      //isHangWinchOut = true; 
+    //}
     //hangWinchMotor.setVoltage(outWinchVelVolts);
 
      // Uncomment these for development, testing or debugging work:
@@ -161,15 +170,15 @@ public class HangWinchSubSys extends SubsystemBase {
   public void runHangWinchIn() {
     // Uncomment this for development, testing or debugging work:
 
-    double rotations = -75.0;
+    double rotations = -100.0;
 
-    hangWinchMotor.setVoltage(inWinchVelVolts);
+    //hangWinchMotor.setVoltage(inWinchVelVolts);
 
-    //hangWinchPIDController.setReference(rotations, CANSparkBase.ControlType.kPosition);
+    hangWinchPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
     // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
-    SmartDashboard.putNumber("ProcessVariable", hangWinchEncoder.getPosition());
+   // SmartDashboard.putNumber("ProcessVariable", hangWinchEncoder.getPosition());
 
   }
 

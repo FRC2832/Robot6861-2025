@@ -23,7 +23,7 @@ public class WinchPinSubSys extends SubsystemBase {
   private final SparkMax winchPinMotor;
   private static final Timer TIMER = new Timer();
   private final double timerLim1 = 2.0;
-  private final double timerLim2 = 2.0;
+  private final double timerLim2 = 1.7;
   private final double downWinchVelPct;
   private final double downWinchVelVolts;
   private final double stopWinchVelVolts;
@@ -49,7 +49,7 @@ public class WinchPinSubSys extends SubsystemBase {
 
     downWinchVelPct = 99.0 / 100.0;
     downWinchVelVolts = downWinchVelPct * 12.0;
-    upWinchVelPct = 25.0 / 100.0;
+    upWinchVelPct = 35.0 / 100.0;
     upWinchVelVolts = upWinchVelPct * 12.0;
     stopWinchVelVolts = 0.0;
     
@@ -76,7 +76,7 @@ public class WinchPinSubSys extends SubsystemBase {
     if (TIMER.get() < timerLim1) {
         winchPinMotor.setVoltage(-downWinchVelVolts);
     } else {
-        winchPinMotor.setVoltage(stopWinchVelVolts);
+        winchPinMotor.setVoltage(0.0);
 
     }
 
@@ -87,7 +87,7 @@ public class WinchPinSubSys extends SubsystemBase {
     if (TIMER.get() < timerLim2) {
         winchPinMotor.setVoltage(upWinchVelVolts);
     } else {
-        winchPinMotor.setVoltage(stopWinchVelVolts);
+        winchPinMotor.setVoltage(0.0);
 
     }
 

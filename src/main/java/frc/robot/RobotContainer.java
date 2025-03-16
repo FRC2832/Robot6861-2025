@@ -168,7 +168,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("RaiseElevL4", new ElevatorL4Cmd(elevatorSubSysObj));
 
         NamedCommands.registerCommand("RaiseElevL2", new ElevatorL2Cmd(elevatorSubSysObj));
-
+        NamedCommands.registerCommand("ElevHold", new ElevatorHoldCmd(elevatorSubSysObj));
+       
         NamedCommands.registerCommand("Score", new CoralOutAutonCmd(coralSubSysObj));
         NamedCommands.registerCommand("LowerElevator", new ElevatorBottomCmd(elevatorSubSysObj));
         
@@ -216,12 +217,13 @@ public class RobotContainer {
         //frontLeds.setDefaultCommand(new ShowTargetInfo(frontLeds, frontCamera, Color.fromHSV(75, 255, 255)));
        // rearLeds.setDefaultCommand(new ShowTargetInfo(rearLeds, frontCamera, Color.fromHSV(75, 255, 255)));
         //rearLeds.setDefaultCommand(new TestLeds(rearLeds));
-        hangWinchSubSysObj.setDefaultCommand(new WinchStopCmd(hangWinchSubSysObj));
+        //hangWinchSubSysObj.setDefaultCommand(new WinchStopCmd(hangWinchSubSysObj));
         elevatorSubSysObj.setDefaultCommand(new ElevatorHoldCmd(elevatorSubSysObj));
 
         SequentialCommandGroup climbPrepGroup = new SequentialCommandGroup(
-                new WinchOutCmd(hangWinchSubSysObj), 
-                new RampDownCmd(winchPinSubSysObj)
+                //new WinchOutCmd(hangWinchSubSysObj), 
+                new RampDownCmd(winchPinSubSysObj),
+                new RampUpCmd(winchPinSubSysObj)
         );
         climbPrepGroup.setName("climbPrepGroup");
 
@@ -240,22 +242,31 @@ public class RobotContainer {
        //TODO: put this on as sequential command attached to select or start button?  new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
        // new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutPrepCmd(hangWinchSubSysObj));
 
-       // new Trigger(driverController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
+       new Trigger(driverController::getAButtonPressed).whileTrue(new RampUpCmd(winchPinSubSysObj));
 
 
         // Hanging commands
         //new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
 
         //new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
-        new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.2).whileTrue(new WinchInCmd(hangWinchSubSysObj));
-        new Trigger(() -> operatorController.getLeftBumperButtonPressed()).whileTrue(climbPrepGroup);
+       
+        //new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.5).whileTrue(climbPrepGroup);
 
+        new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.5).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+        new Trigger(() -> operatorController.getLeftTriggerAxis() < 0.5).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        
+        //new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
-        new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
+        //new Trigger(driverController::getYButtonPressed).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+
+        new Trigger(driverController::getBButtonPressed).whileTrue(climbPrepGroup);
+        
+
+        //new Trigger(driverController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
 
         // Elevator Commands
-        new Trigger(() -> operatorController.getPOV() == 0).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
+        new Trigger(() -> operatorController.getYButtonPressed()).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
         //TODO: test that this works as instant command with A button pressed while true....
         new Trigger(() -> operatorController.getAButtonPressed()).whileTrue(new ElevatorL2Cmd(elevatorSubSysObj));
         
@@ -287,10 +298,11 @@ public class RobotContainer {
 
         new Trigger(() -> driverController.getRightBumperButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
-        //new Trigger(driverController::getBButtonPressed).whileTrue(new CoralReverseCmd(coralSubSysObj));
-
         new Trigger(() -> operatorController.getBButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
+
+
+        // Reset Field Oriented
         new Trigger(() -> driverController.getStartButtonPressed()).whileTrue(new InstantCommand(() -> swerveDrive.zeroGyroWithAlliance()));
 
     }
