@@ -113,13 +113,13 @@ tasks.withType(JavaCompile) {
 
 //custom LivoniaWarriors logging
 //make the object file that has git info
-task putGitInfo(type: Exec) {
-    doFirst {
-        commandLine "java", "-classpath", "$projectDir/build/classes/java/main/", "org.livoniawarriors.GitVersion"
-    }
-}
+// task putGitInfo(type: Exec) {
+//     doFirst {
+//         commandLine "java", "-classpath", "$projectDir/build/classes/java/main/", "org.livoniawarriors.GitVersion"
+//     }
+// }
 //force this task to run before jar packaging
-jar.dependsOn putGitInfo
+// jar.dependsOn putGitInfo
 
 //don't show warning about using Pheonix 5 stuff still
 tasks.withType(JavaCompile) {

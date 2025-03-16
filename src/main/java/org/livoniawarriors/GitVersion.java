@@ -54,29 +54,29 @@ public class GitVersion implements Serializable {
         try {
             // setup the commands to run
             GitVersion result = new GitVersion();
-            Runtime rt = Runtime.getRuntime();
-            Process pr;
+            // Runtime rt = Runtime.getRuntime();
+            //Process pr;
             result.BuildDate = new Date();
 
             //get the user who made the commit
-            pr = rt.exec("git config user.name");
-            pr.waitFor();
-            result.BuildAuthor = new String(pr.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            //pr = rt.exec("git config user.name");
+           // pr.waitFor();
+            //result.BuildAuthor = new String(pr.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             //remove newline at end of name
             result.BuildAuthor = result.BuildAuthor.substring(0, result.BuildAuthor.length()-1);
 
             // run git log to get the last commits hash
-            pr = rt.exec("git log -1 --pretty=tformat:%h");
-            pr.waitFor();
-            result.LastCommit = new String(pr.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            //pr = rt.exec("git log -1 --pretty=tformat:%h");
+           // pr.waitFor();
+            //result.LastCommit = new String(pr.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             if(result.LastCommit.length() > 7) {
                 result.LastCommit = result.LastCommit.substring(0, 7);
             }
 
             // get the status to see if any files have changed
-            pr = rt.exec("git status -s");
-            var temp = new String(pr.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-            result.IsModified = temp.length() != 0;
+            //pr = rt.exec("git status -s");
+           // var temp = new String(pr.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+           // result.IsModified = temp.length() != 0;
 
             // write object file
             FileOutputStream fileOutputStream = new FileOutputStream("src/main/deploy/gitinfo.obj");
@@ -87,10 +87,10 @@ public class GitVersion implements Serializable {
 
         } catch (IOException e) {
             System.exit(1);
-        } catch (InterruptedException e) {
-            System.exit(1);
-        }
+        } //catch (InterruptedException e) {
+            //System.exit(1);
+        //}
 
         System.exit(0);
-    }
+   }
 }
