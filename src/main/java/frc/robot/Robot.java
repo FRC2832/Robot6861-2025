@@ -47,7 +47,7 @@ public class Robot extends LoggedRobot {
         Logger.start();
     
         //display the Git info for the build in the network tables
-        GitVersion.loadVersion().printVersions();
+        //GitVersion.loadVersion().printVersions();
 
         SmartDashboard.putData(CommandScheduler.getInstance());
 

@@ -44,6 +44,6 @@ public class ElevatorL4Cmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= 7.0;
+    return timer.get() >= 2.75;   //TODO - confirm this number
   }
 }

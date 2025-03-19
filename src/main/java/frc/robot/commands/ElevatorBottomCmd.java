@@ -15,12 +15,13 @@ public class ElevatorBottomCmd extends Command {
 
   private final ElevatorSubSys elevatorSubSysObj;
   private final Timer timer = new Timer();
+  private final XboxController operatorController;
 
-  public ElevatorBottomCmd(ElevatorSubSys elevatorSubSys) {
+  public ElevatorBottomCmd(ElevatorSubSys elevatorSubSys, XboxController operatorController) {
     // Use addRequirements() here to declare subsystem dependencies.
     
     this.elevatorSubSysObj = elevatorSubSys;
-    //this.operatorController = operatorController;
+    this.operatorController = operatorController;
     addRequirements(elevatorSubSysObj);
   }
 
@@ -34,7 +35,7 @@ public class ElevatorBottomCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevatorSubSysObj.runElevBottom();
+    elevatorSubSysObj.runElevStow(operatorController.getLeftY() );
   }
 
   // Called once the command ends or is interrupted.

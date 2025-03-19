@@ -13,12 +13,12 @@ public class ElevatorDownCmd extends Command {
   /** Creates a new ElevatorDownCmd. */
 
   private final ElevatorSubSys elevatorSubSysObj;
-  private final XboxController operatorController;
+  //private final XboxController operatorController;
 
-  public ElevatorDownCmd(ElevatorSubSys elevatorSubSys, XboxController operatorController) {
+  public ElevatorDownCmd(ElevatorSubSys elevatorSubSys) {    //was XboxController operatorController
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevatorSubSysObj = elevatorSubSys;
-    this.operatorController = operatorController;
+   // this.operatorController = operatorController;
     addRequirements(elevatorSubSysObj);
   }
 
@@ -29,7 +29,7 @@ public class ElevatorDownCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevatorSubSysObj.runElevDown(operatorController.getLeftY());
+    elevatorSubSysObj.runElevDown();    //was operatorController.getLeftY()
   }
 
   // Called once the command ends or is interrupted.
@@ -39,6 +39,12 @@ public class ElevatorDownCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //if {elevFrontLeaderEncoder.getPosition() > -10.0;
+     // return true;
+    ////} else {
+      //return false;
+    //}
+
     return false;
   }
 }

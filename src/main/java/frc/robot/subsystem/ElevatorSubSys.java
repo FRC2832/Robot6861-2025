@@ -61,7 +61,8 @@ public class ElevatorSubSys extends SubsystemBase {
     SparkMaxConfig elevBackFollowerMotorConfig = new SparkMaxConfig();
 
     globalConfig
-      .smartCurrentLimit(70) 
+      .smartCurrentLimit(80) 
+      .closedLoopRampRate(0.1)
       .idleMode(IdleMode.kBrake); 
 
 
@@ -81,13 +82,13 @@ public class ElevatorSubSys extends SubsystemBase {
       .p(0.09, ClosedLoopSlot.kSlot0)
       .i(0.0, ClosedLoopSlot.kSlot0)
       .d(0.0, ClosedLoopSlot.kSlot0)
-      .outputRange(-0.4, 0.3, ClosedLoopSlot.kSlot0); //was 0.3
+      .outputRange(-0.4, 0.025, ClosedLoopSlot.kSlot0); //was 0.3
 
 
     
     
-    elevFrontLeaderMotor.configure(elevFrontLeaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);   // Look into how to what reset safe parameters means (answer from docs: useful in case the SPARK MAX is replaced)
-    elevBackFollowerMotor.configure(elevBackFollowerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    elevFrontLeaderMotor.configure(elevFrontLeaderMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);   // BroncoBotz (Nstrike from YAGSL) uses NO for their elevator with Neo.   Look into how to what reset safe parameters means (answer from docs: useful in case the SPARK MAX is replaced)
+    elevBackFollowerMotor.configure(elevBackFollowerMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     
     elevFrontLeaderEncoder.setPosition(0.0);
@@ -119,11 +120,9 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevUpJoystick(double leftJoystickValue) {
 
-    //double rotations = 5.0;  
-
-    //elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts * -leftJoystickValue);  //needs to be net negative because -volts is up for elevator
-   
+    SmartDashboard.putNumber("Elevator up motor volts OL", elevFrontLeaderMotor.getAppliedOutput());
+
   }
 
   public void runElevHold() {
@@ -146,7 +145,7 @@ public class ElevatorSubSys extends SubsystemBase {
     //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
     //SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
-    //SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator Hold volts", elevFrontLeaderMotor.getAppliedOutput());
    
   }
 
@@ -155,9 +154,12 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL4() {
 
-    double rotations = -23.0;
+    double rotations = -23.0;  
 
-    elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    elevFrontLeaderPIDController.setReference(
+                                rotations, 
+                                ControlType.kPosition, 
+                                ClosedLoopSlot.kSlot0);
 
 
 
@@ -168,28 +170,32 @@ public class ElevatorSubSys extends SubsystemBase {
    // SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
    
-
    
   }
 
 
   public void runElevL2() {
 
-    double rotations = -6.0;
+    double rotations = -11.0;  //l3 value
 
-    elevFrontLeaderPIDController.setReference(
-                                rotations, 
-                                ControlType.kMAXMotionPositionControl, 
-                                ClosedLoopSlot.kSlot0,
-                                -0.8);  //actually need like 1.2 but testing low for now
+    //elevFrontLeaderPIDController.setReference(
+                             // rotations, 
+                            //  ControlType.kMAXMotionPositionControl, 
+                             // ClosedLoopSlot.kSlot0,
+                            //  -30.0);  //actually need like 1.2 but testing low for now
 
+
+    elevFrontLeaderPIDController.setReference(  //gives volts of 0.115 - same as hold volts, need more voltage
+                              rotations, 
+                              ControlType.kPosition, 
+                              ClosedLoopSlot.kSlot0);
 
 
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
-    //martDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    //SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
     //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
-   // SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
    
 
@@ -216,9 +222,9 @@ public class ElevatorSubSys extends SubsystemBase {
   }
 
  
-  public void runElevBottom() {
+  public void runElevDown() {
 
-    double rotations = -10.0;
+    double rotations = -5.0;
 
     elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
@@ -236,7 +242,7 @@ public class ElevatorSubSys extends SubsystemBase {
    // SmartDashboard.putNumber("SetPoint", rotations);
     //SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
     //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
-   // SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator down motor volts CL", elevFrontLeaderMotor.getAppliedOutput());
   //  SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
    
 
@@ -245,7 +251,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
 
 
-  public void runElevDown(double leftJoystickValue) {
+  public void runElevStow(double leftJoystickValue) {
     // Uncomment this for development, testing or debugging work:
 
     //double rotations = -1.0;
@@ -255,6 +261,7 @@ public class ElevatorSubSys extends SubsystemBase {
     // elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
     // Uncomment these for development, testing or debugging work:
+    SmartDashboard.putNumber("Elevator STOW motor volts OL", elevFrontLeaderMotor.getAppliedOutput());
     //SmartDashboard.putNumber("SetPoint", rotations);
     //SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
 

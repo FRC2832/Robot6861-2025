@@ -65,7 +65,7 @@ public class WinchPinSubSys extends SubsystemBase {
         @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Winch Pin ", winchPinMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Winch Pin ", winchPinMotor.getAppliedOutput());
 
   }
 

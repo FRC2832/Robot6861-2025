@@ -66,16 +66,16 @@ public class HangWinchSubSys extends SubsystemBase {
     SparkMaxConfig hangWinchMotorConfig = new SparkMaxConfig();
 
     globalConfig
-      .smartCurrentLimit(80);
-     // .idleMode(IdleMode.kBrake); //TODO: look up idlemode in 2025 Revlib
+      .smartCurrentLimit(80)
+      .idleMode(IdleMode.kBrake); //TODO: look up idlemode in 2025 Revlib
 
-    hangWinchMotorConfig
+     hangWinchMotorConfig
       .apply(globalConfig);
 
-    hangWinchMotorConfig.closedLoop
+     hangWinchMotorConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       // position pid
-      .p(0.45, ClosedLoopSlot.kSlot0)
+      .p(0.55, ClosedLoopSlot.kSlot0)
       .i(0.0, ClosedLoopSlot.kSlot0)
       .d(0.0, ClosedLoopSlot.kSlot0)
       .outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot0);
@@ -87,28 +87,28 @@ public class HangWinchSubSys extends SubsystemBase {
       //.velocityFF(0.0, ClosedLoopSlot.kSlot1)
       //.outputRange(-0.98, 0.98, ClosedLoopSlot.kSlot1);
     
-    hangWinchMotor.configure(hangWinchMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      hangWinchMotor.configure(hangWinchMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
 
-    //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);  //to help reduce CANbus high utilization
-    //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 100);  // TODO: might be able to go higher than 100....
+     //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);  //to help reduce CANbus high utilization
+     //hangWinchMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 100);  // TODO: might be able to go higher than 100....
 
-    hangWinchEncoder = hangWinchMotor.getEncoder(); 
-    hangWinchEncoder.setPosition(0.0);
-    hangWinchPIDController = hangWinchMotor.getClosedLoopController();
+      hangWinchEncoder = hangWinchMotor.getEncoder(); 
+      hangWinchEncoder.setPosition(0.0);
+      hangWinchPIDController = hangWinchMotor.getClosedLoopController();
 
-   // hangWinchMotor.setSmartCurrentLimit(Constants.HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT);
-   // hangWinchMotor.setSecondaryCurrentLimit(Constants.HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT);
+     // hangWinchMotor.setSmartCurrentLimit(Constants.HANG_WINCH_MOTOR_SMART_CURRENT_LIMIT);
+     // hangWinchMotor.setSecondaryCurrentLimit(Constants.HANG_WINCH_MOTOR_SECONDARY_CURRENT_LIMIT);
 
-    inWinchVelPct = 60.0 / 100.0;
-    inWinchVelVolts = inWinchVelPct * 12.0;
-    outWinchVelPct = -45.0 / 100.0;
-    outWinchVelVolts = outWinchVelPct * 12.0;
-    endHangWinchVelPct = 0.0 / 100.0;
-    endHangWinchVelVolts = endHangWinchVelPct * 12.0;
+      inWinchVelPct = 60.0 / 100.0;
+      inWinchVelVolts = inWinchVelPct * 12.0;
+      outWinchVelPct = -45.0 / 100.0;
+      outWinchVelVolts = outWinchVelPct * 12.0;
+      endHangWinchVelPct = 0.0 / 100.0;
+      endHangWinchVelVolts = endHangWinchVelPct * 12.0;
 
-    //hangWinchMotor.setIdleMode(IdleMode.kBrake); // set to coast when needing to work on climber
+     //hangWinchMotor.setIdleMode(IdleMode.kBrake); // set to coast when needing to work on climber
 
   }
 
@@ -136,7 +136,7 @@ public class HangWinchSubSys extends SubsystemBase {
     //SmartDashboard.putNumber("Hang Winch Motor Speed", hangWinchEncoder.getVelocity());
     //SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
 
- }
+  }
 
 
 
@@ -144,7 +144,7 @@ public class HangWinchSubSys extends SubsystemBase {
     // Uncomment this for development, testing or debugging work:
     //SmartDashboard.putNumber("Hang winch encoder out", hangWinchEncoder.getPosition());
 
-    double rotations = -325.0;  
+    double rotations = -330.0;  
 
     hangWinchPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
@@ -170,7 +170,8 @@ public class HangWinchSubSys extends SubsystemBase {
   public void runHangWinchIn() {
     // Uncomment this for development, testing or debugging work:
 
-    double rotations = -100.0;
+    double rotations = -60.0; //gotta test this value. started Monday at -80.  
+                              //Might need to slow motor down too to reduce swinging.
 
     //hangWinchMotor.setVoltage(inWinchVelVolts);
 
@@ -178,7 +179,7 @@ public class HangWinchSubSys extends SubsystemBase {
 
     // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
-   // SmartDashboard.putNumber("ProcessVariable", hangWinchEncoder.getPosition());
+     //SmartDashboard.putNumber("ProcessVariable", hangWinchEncoder.getPosition());
 
   }
 
@@ -191,7 +192,7 @@ public class HangWinchSubSys extends SubsystemBase {
     // This method will be called once per scheduler run
     // Uncomment this for development, testing or debugging work:
     SmartDashboard.putNumber("hangWinch encoder", hangWinchEncoder.getPosition());
-    SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
 
   }
 }

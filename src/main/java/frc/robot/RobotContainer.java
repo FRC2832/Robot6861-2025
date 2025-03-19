@@ -171,9 +171,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("ElevHold", new ElevatorHoldCmd(elevatorSubSysObj));
        
         NamedCommands.registerCommand("Score", new CoralOutAutonCmd(coralSubSysObj));
-        NamedCommands.registerCommand("LowerElevator", new ElevatorBottomCmd(elevatorSubSysObj));
-        
-
+        NamedCommands.registerCommand("LowerElevator", new ElevatorDownCmd(elevatorSubSysObj));
+        //NamedCommands.registerCommand("StowElevator", new ElevatorBottomAutonCmd(elevatorSubSysObj));
+        //TODO: create Auton cmd for Stow
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -220,12 +220,12 @@ public class RobotContainer {
         //hangWinchSubSysObj.setDefaultCommand(new WinchStopCmd(hangWinchSubSysObj));
         elevatorSubSysObj.setDefaultCommand(new ElevatorHoldCmd(elevatorSubSysObj));
 
-        SequentialCommandGroup climbPrepGroup = new SequentialCommandGroup(
-                //new WinchOutCmd(hangWinchSubSysObj), 
+        SequentialCommandGroup climbGroup = new SequentialCommandGroup( 
                 new RampDownCmd(winchPinSubSysObj),
+                new WinchInCmd(hangWinchSubSysObj),
                 new RampUpCmd(winchPinSubSysObj)
         );
-        climbPrepGroup.setName("climbPrepGroup");
+        climbGroup.setName("climbGroup");
 
 
 
@@ -253,13 +253,15 @@ public class RobotContainer {
         //new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.5).whileTrue(climbPrepGroup);
 
         new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.5).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
-        new Trigger(() -> operatorController.getLeftTriggerAxis() < 0.5).whileTrue(new WinchInCmd(hangWinchSubSysObj));
-        
+        //new Trigger(() -> operatorController.getLeftTriggerAxis() < 0.5).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        new Trigger(() -> operatorController.getLeftTriggerAxis() < 0.5).whileTrue(climbGroup);
+
+
         //new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
         //new Trigger(driverController::getYButtonPressed).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
 
-        new Trigger(driverController::getBButtonPressed).whileTrue(climbPrepGroup);
+        
         
 
         //new Trigger(driverController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
@@ -268,12 +270,13 @@ public class RobotContainer {
         // Elevator Commands
         new Trigger(() -> operatorController.getYButtonPressed()).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
         //TODO: test that this works as instant command with A button pressed while true....
-        new Trigger(() -> operatorController.getAButtonPressed()).whileTrue(new ElevatorL2Cmd(elevatorSubSysObj));
+        new Trigger(operatorController::getAButtonPressed).whileTrue(new ElevatorL2Cmd(elevatorSubSysObj));
         
         new Trigger(() -> operatorController.getLeftY() < -0.075).whileTrue(new ElevatorUpJoystickCmd(elevatorSubSysObj, operatorController));
        // new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
-        new Trigger(() -> operatorController.getLeftY() > 0.075).whileTrue(new ElevatorDownCmd(elevatorSubSysObj, operatorController));
-        
+        new Trigger(() -> operatorController.getLeftY() > 0.075 && operatorController.getLeftY() < 0.5).whileTrue(new ElevatorDownCmd(elevatorSubSysObj));
+        new Trigger(() -> operatorController.getLeftY() >= 0.5).whileTrue(new ElevatorBottomCmd(elevatorSubSysObj, operatorController));
+
         //new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
         //new Trigger(driverController::getXButtonPressed).whileTrue(new ElevatorStopCmd(elevatorSubSysObj));
 
@@ -284,6 +287,7 @@ public class RobotContainer {
         //new Trigger(operatorController::getXButtonPressed).whileTrue(new ElevatorStopCmd(elevatorSubSysObj));
 
 
+    
         //Turtle and snail mode TODO: fix this - method in command is not working
         new Trigger(() -> driverController.getLeftTriggerAxis() > 0.2).whileTrue(new TurtleModeCmd(swerveDrive));
         new Trigger(() -> driverController.getLeftTriggerAxis() > 0.6).whileTrue(new SnailModeCmd(swerveDrive));
@@ -298,7 +302,7 @@ public class RobotContainer {
 
         new Trigger(() -> driverController.getRightBumperButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
-        new Trigger(() -> operatorController.getBButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        new Trigger(() -> operatorController.getRightBumperButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
 
 

@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.HangWinchSubSys;
+//import frc.robot.subsystem.WinchPinSubSys;
 
 
 
@@ -14,12 +15,16 @@ import frc.robot.subsystem.HangWinchSubSys;
 public class WinchOutCmd extends Command {
   /** Creates a new WinchOutCmd. */
   private final HangWinchSubSys hangWinchSubSysObj;
+  //private final WinchPinSubSys winchPinSubSysObj;
+
   private final Timer timer = new Timer();
 
-  public WinchOutCmd(HangWinchSubSys hangWinchSubSys) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.hangWinchSubSysObj = hangWinchSubSys;
-    addRequirements(hangWinchSubSysObj);
+  
+  public WinchOutCmd(HangWinchSubSys hangWinchSubSysObj) {  //WinchPinSubSys winchPinSubSysObj
+      // Use addRequirements() here to declare subsystem dependencies.
+      this.hangWinchSubSysObj = hangWinchSubSysObj;
+     // this.winchPinSubSysObj = winchPinSubSysObj;
+      addRequirements(hangWinchSubSysObj); 
 
   }
 
@@ -33,6 +38,7 @@ public class WinchOutCmd extends Command {
   @Override
   public void execute() {
     hangWinchSubSysObj.runHangWinchOut();
+    //winchPinSubSysObj.winchPinDown();
   }
 
   // Called once the command ends or is interrupted.
