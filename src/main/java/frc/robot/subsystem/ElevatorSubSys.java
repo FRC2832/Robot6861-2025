@@ -145,7 +145,7 @@ public class ElevatorSubSys extends SubsystemBase {
     //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
     //SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Elevator Hold volts", elevFrontLeaderMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Elevator Hold volts", elevFrontLeaderMotor.getAppliedOutput());
    
   }
 
@@ -154,7 +154,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL4() {
 
-    double rotations = -23.0;  
+    double rotations = -23.75;  
 
     elevFrontLeaderPIDController.setReference(
                                 rotations, 
@@ -174,9 +174,39 @@ public class ElevatorSubSys extends SubsystemBase {
   }
 
 
+
+  public void runElevL3() {
+
+    double rotations = -12.0;  //l3 value
+    //System.out.println("in runElevL2");
+
+    //elevFrontLeaderPIDController.setReference(
+                             // rotations, 
+                            //  ControlType.kMAXMotionPositionControl, 
+                             // ClosedLoopSlot.kSlot0,
+                            //  -30.0);  //actually need like 1.2 but testing low for now
+
+
+    elevFrontLeaderPIDController.setReference(  //gives volts of 0.115 - same as hold volts, need more voltage
+                              rotations, 
+                              ControlType.kPosition, 
+                              ClosedLoopSlot.kSlot0);
+
+
+     // Uncomment these for development, testing or debugging work:
+    //SmartDashboard.putNumber("SetPoint", rotations);
+    //SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+    //SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
+   
+   
+  }
+
   public void runElevL2() {
 
-    double rotations = -11.0;  //l3 value
+    double rotations = -10.0;  
+    System.out.println("in runElevL2");
 
     //elevFrontLeaderPIDController.setReference(
                              // rotations, 

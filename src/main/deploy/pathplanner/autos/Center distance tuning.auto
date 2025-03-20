@@ -5,9 +5,66 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Center To Score"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center To Score Prep"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RaiseElevL2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RaiseElevL4"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ElevHold"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef Move back"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowerElevator"
+                }
+              }
+            ]
           }
         }
       ]

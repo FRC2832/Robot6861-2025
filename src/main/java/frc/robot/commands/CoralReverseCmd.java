@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.CoralSubSys;
 
@@ -11,6 +12,7 @@ import frc.robot.subsystem.CoralSubSys;
 public class CoralReverseCmd extends Command {
   /** Creates a new CoralReverseCmd. */
   private final CoralSubSys coralSubSysObj;
+  //private final Timer timer = new Timer();
 
   public CoralReverseCmd(CoralSubSys coralSubSys) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -21,23 +23,30 @@ public class CoralReverseCmd extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    //timer.reset();
+   // timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+  
     coralSubSysObj.runCoralReverse();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    
+    //timer.stop();
     coralSubSysObj.stopCoral();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //return timer.get() >= 1.5;
     return false;
   }
 }

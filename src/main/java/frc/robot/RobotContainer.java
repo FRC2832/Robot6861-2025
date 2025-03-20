@@ -45,6 +45,7 @@ import frc.robot.commands.ElevatorBottomCmd;
 import frc.robot.commands.ElevatorDownCmd;
 import frc.robot.commands.ElevatorHoldCmd;
 import frc.robot.commands.ElevatorL2Cmd;
+import frc.robot.commands.ElevatorL3Cmd;
 import frc.robot.commands.ElevatorL4Cmd;
 import frc.robot.commands.ElevatorStopCmd;
 import frc.robot.commands.ElevatorUpCmd;
@@ -268,9 +269,12 @@ public class RobotContainer {
 
 
         // Elevator Commands
-        new Trigger(() -> operatorController.getYButtonPressed()).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
+        new Trigger(operatorController::getYButton).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
         //TODO: test that this works as instant command with A button pressed while true....
-        new Trigger(operatorController::getAButtonPressed).whileTrue(new ElevatorL2Cmd(elevatorSubSysObj));
+        new Trigger(operatorController::getBButton).whileTrue(new ElevatorL3Cmd(elevatorSubSysObj));
+        new Trigger(operatorController::getAButton).whileTrue(new ElevatorL2Cmd(elevatorSubSysObj));
+
+        //new Trigger(() -> operatorController.getAButtonPressed()).whileTrue(new InstantCommand(() -> elevatorSubSysObj.runElevL2()));
         
         new Trigger(() -> operatorController.getLeftY() < -0.075).whileTrue(new ElevatorUpJoystickCmd(elevatorSubSysObj, operatorController));
        // new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
@@ -300,9 +304,9 @@ public class RobotContainer {
         new Trigger(() -> operatorController.getRightTriggerAxis() <= 0.3).whileTrue(new CoralStopCmd(coralSubSysObj));
 
 
-        new Trigger(() -> driverController.getRightBumperButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        new Trigger(driverController::getRightBumperButton).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
-        new Trigger(() -> operatorController.getRightBumperButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        new Trigger(operatorController::getRightBumperButton).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
 
 

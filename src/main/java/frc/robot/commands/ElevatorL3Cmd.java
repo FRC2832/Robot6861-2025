@@ -4,18 +4,19 @@
 
 package frc.robot.commands;
 
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.ElevatorSubSys;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorL2Cmd extends Command {
-  /** Creates a new ElevatorL2Cmd. */
+public class ElevatorL3Cmd extends Command {
+  /** Creates a new ElevatorL3Cmd. */
 
   private final ElevatorSubSys elevatorSubSysObj;
   private final Timer timer = new Timer();
 
-  public ElevatorL2Cmd(ElevatorSubSys elevatorSubSys) {
+  public ElevatorL3Cmd(ElevatorSubSys elevatorSubSys) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevatorSubSysObj = elevatorSubSys;
     addRequirements(elevatorSubSysObj);
@@ -31,7 +32,7 @@ public class ElevatorL2Cmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevatorSubSysObj.runElevL2();
+    elevatorSubSysObj.runElevL3();
   }
 
   // Called once the command ends or is interrupted.
