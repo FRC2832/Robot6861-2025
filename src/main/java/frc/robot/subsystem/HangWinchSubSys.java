@@ -132,7 +132,7 @@ public class HangWinchSubSys extends SubsystemBase {
 
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
-    //SmartDashboard.putNumber("ProcessVariable", climberEncoder.getPosition());
+    //SmartDashboard.putNumber("ProcessVariable", hangWinchEncoder.getPosition());
     //SmartDashboard.putNumber("Hang Winch Motor Speed", hangWinchEncoder.getVelocity());
     //SmartDashboard.putNumber("hangWinch motor volts", hangWinchMotor.getAppliedOutput());
 
@@ -144,15 +144,16 @@ public class HangWinchSubSys extends SubsystemBase {
     // Uncomment this for development, testing or debugging work:
     //SmartDashboard.putNumber("Hang winch encoder out", hangWinchEncoder.getPosition());
 
-    double rotations = -330.0;  
+    double rotations = -315.0;  
 
     hangWinchPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
-    //if (hangWinchEncoder.getPosition() > -250.0) {  // winch starts at 0 and extends to -250 encoder counts
-      //isHangWinchOut = false;
-    //} else {
-      //isHangWinchOut = true; 
+   // if (hangWinchEncoder.getPosition() > -330.0) {  // winch starts at 0 and extends to -250 encoder counts
+     // isHangWinchOut = false;
+   // } else {
+     // isHangWinchOut = true; 
     //}
+
     //hangWinchMotor.setVoltage(outWinchVelVolts);
 
      // Uncomment these for development, testing or debugging work:
@@ -170,7 +171,7 @@ public class HangWinchSubSys extends SubsystemBase {
   public void runHangWinchIn() {
     // Uncomment this for development, testing or debugging work:
 
-    double rotations = -60.0; //gotta test this value. started Monday at -80.  
+    double rotations = -40.0; //gotta test this value. started Monday at -80.  
                               //Might need to slow motor down too to reduce swinging.
 
     //hangWinchMotor.setVoltage(inWinchVelVolts);

@@ -222,11 +222,18 @@ public class RobotContainer {
         elevatorSubSysObj.setDefaultCommand(new ElevatorHoldCmd(elevatorSubSysObj));
 
         SequentialCommandGroup climbGroup = new SequentialCommandGroup( 
-                new RampDownCmd(winchPinSubSysObj),
                 new WinchInCmd(hangWinchSubSysObj),
                 new RampUpCmd(winchPinSubSysObj)
         );
         climbGroup.setName("climbGroup");
+
+        
+        SequentialCommandGroup climbPrepGroup = new SequentialCommandGroup( 
+            new WinchOutCmd(hangWinchSubSysObj),
+            new RampDownCmd(winchPinSubSysObj)
+               
+        );
+        climbPrepGroup.setName("climbPrepGroup");
 
 
 
@@ -243,7 +250,7 @@ public class RobotContainer {
        //TODO: put this on as sequential command attached to select or start button?  new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
        // new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutPrepCmd(hangWinchSubSysObj));
 
-       new Trigger(driverController::getAButtonPressed).whileTrue(new RampUpCmd(winchPinSubSysObj));
+       new Trigger(driverController::getXButtonPressed).whileTrue(new RampUpCmd(winchPinSubSysObj));
 
 
         // Hanging commands
@@ -253,14 +260,15 @@ public class RobotContainer {
        
         //new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.5).whileTrue(climbPrepGroup);
 
-        new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.5).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+        new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.3).whileTrue(climbPrepGroup);
         //new Trigger(() -> operatorController.getLeftTriggerAxis() < 0.5).whileTrue(new WinchInCmd(hangWinchSubSysObj));
-        new Trigger(() -> operatorController.getLeftTriggerAxis() < 0.5).whileTrue(climbGroup);
+        //new Trigger(() -> operatorController.getLeftTriggerAxis() < 0.5).whileTrue(climbGroup);
 
 
         //new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
-        //new Trigger(driverController::getYButtonPressed).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+       // new Trigger(driverController::getYButton).whileTrue(climbPrepGroup);
+        new Trigger(driverController::getAButton).whileTrue(climbGroup);
 
         
         

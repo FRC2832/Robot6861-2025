@@ -103,9 +103,9 @@ public class SwerveSubsystem extends SubsystemBase
     }
 
     swerveDrive.swerveController.addSlewRateLimiters(
-      new SlewRateLimiter(0.1), // x
-      new SlewRateLimiter(0.1), // y
-      new SlewRateLimiter(0.2) // angle
+      new SlewRateLimiter(2.0), // x   started at 3.0 higher is more responsive but also more tippy
+      new SlewRateLimiter(2.0), // y    started at 3.0.  Higher is more responsive but also more tippy
+      new SlewRateLimiter(2.0) // angle  started at 3.0 
     );
 
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
@@ -115,7 +115,7 @@ public class SwerveSubsystem extends SubsystemBase
                                                0.1); //TODO: could this help with the backright module issue???  Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
     swerveDrive.setModuleEncoderAutoSynchronize(false,
                                                 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
-    swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
+    //.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
     
     if (visionDriveTest)
     {

@@ -154,7 +154,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL4() {
 
-    double rotations = -23.75;  
+    double rotations = -21.0;  
 
     elevFrontLeaderPIDController.setReference(
                                 rotations, 
@@ -205,8 +205,8 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL2() {
 
-    double rotations = -10.0;  
-    System.out.println("in runElevL2");
+    double rotations = -7.75;  
+    //System.out.println("in runElevL2");
 
     //elevFrontLeaderPIDController.setReference(
                              // rotations, 

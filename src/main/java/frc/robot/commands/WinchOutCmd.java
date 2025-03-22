@@ -51,11 +51,11 @@ public class WinchOutCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-   // if (hangWinchSubSysObj.runHangWinchOut().isHangWinchOut = true) {
+   //if (hangWinchSubSysObj.runHangWinchOut().isHangWinchOut = true || timer.get() >= 4.5) {
      // return true;
-    //} else {
-      //return false;
-    //}
-    return timer.get() >= 3.5;
+   // } else {
+     // return false;
+  //  }
+    return timer.get() >= 3.6;
   }
 }
