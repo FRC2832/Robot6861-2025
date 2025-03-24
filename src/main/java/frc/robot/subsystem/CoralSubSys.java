@@ -27,8 +27,8 @@ public class CoralSubSys extends SubsystemBase {
    //private final double coralVelRPM;
    private final double stopCoralVelVolts;
    private final double stopCoralVelPct;
-   //DigitalInput coralSensor;
-   //boolean coralSeen;
+   DigitalInput coralSensor;
+   boolean coralSeen;
 
     //private SparkPIDController coralPIDController = new SparkPIDController();
     
@@ -48,7 +48,7 @@ public class CoralSubSys extends SubsystemBase {
     super();
    
       coralMotor = new SparkMax(Constants.CORAL_MOTOR_CAN_ID, MotorType.kBrushless);
-      //this.coralSensor = coralSensor;
+      this.coralSensor = coralSensor;
 
       SparkMaxConfig globalConfig = new SparkMaxConfig();
       SparkMaxConfig coralMotorConfig = new SparkMaxConfig();
@@ -95,10 +95,6 @@ public class CoralSubSys extends SubsystemBase {
   public void runCoralMotorOut() {
 
          // Uncomment this for development, testing or debugging work:
-         //SmartDashboard.putNumber("coral Motor Speed", coralMotorEncoder.getVelocity());
-
-        
-        //shooterMotorFR.set(Constants.FR_SHOOTER_MOTOR_PCT_AMP / 100.0);
 
 
         // PID FR  Motor coefficients  TODO - change these for Coral when ready
@@ -112,22 +108,12 @@ public class CoralSubSys extends SubsystemBase {
         // maxRPM = 5676.0;  // from REV data sheet
 
 
-        // set PID coefficients FR motor
-        //shooterPIDControllerFR.setP(lowKpFr);
-        //shooterPIDControllerFR.setI(lowKiFr);
-        //shooterPIDControllerFR.setD(lowKdFr);
-        //shooterPIDControllerFR.setIZone(lowKizFr);
-        //shooterPIDControllerFR.setFF(lowKffFr);
-        //shooterPIDControllerFR.setOutputRange(kMinOutputFR, kMaxOutputFR);
-
-
         
         //double lowFlRPM =  -3500.0;    //was -3000.0
         //double lowFrRPM =  3500.0;     //was 3000.0
 
         //shooterPIDControllerFL.setReference(lowFlRPM, CANSparkMax.ControlType.kVelocity);
-        //shooterPIDControllerFR.setReference(lowFrRPM, CANSparkMax.ControlType.kVelocity);
-
+       
         coralMotor.setVoltage(coralVelVolts);
 
 
@@ -145,65 +131,6 @@ public class CoralSubSys extends SubsystemBase {
   }
 
 
-
-
-  //public void runShooterHighSpeed() {
-
-        //shooterMotorFR.setVoltage(shooterVelVoltsFR);  // comment this out when running PID
-        // shooterMotorFL.setVoltage(shooterVelVoltsFL);  // comment this out when running PID
-
-         // PID FL  Motor coefficients
-         //kPFl = 0.00024; //was 0.0016
-         //kIFl = 0.0;
-         //kDFl = 0.0; 
-         //kIzFl = 0.0; 
-         //kFFFl = 0.00017;   //was 0.000179
-         //kMaxOutputFL = 0.99; 
-         //kMinOutputFL = -0.98;
-         //maxRPM = 5676.0;  // from REV data sheet
-
-        // set PID coefficients FL motor
-        //shooterPIDControllerFL.setP(kPFl);
-        //shooterPIDControllerFL.setI(kIFl);
-        //shooterPIDControllerFL.setD(kDFl);
-        //shooterPIDControllerFL.setIZone(kIzFl);
-        //shooterPIDControllerFL.setFF(kFFFl);
-        //shooterPIDControllerFL.setOutputRange(kMinOutputFL, kMaxOutputFL);
-
-        // PID FR  Motor coefficients
-         //kPFr = 0.00024;  //6e-5;   // REV suggested value. May need to change for our motors
-         //kIFr = 0.0;
-        // kDFr = 0.0; 
-         //kIzFr = 0.0; 
-         //kFFFr = 0.00017; // was 0.000179 REV suggested value. May need to change for our motors
-         //kMaxOutputFR = 0.99; 
-         //kMinOutputFR = -0.98;
-         //maxRPM = 5676.0;  // from REV data sheet
-
-
-        // set PID coefficients FR motor
-        //shooterPIDControllerFR.setP(kPFr);
-        //shooterPIDControllerFR.setI(kIFr);
-        //shooterPIDControllerFR.setD(kDFr);
-        //shooterPIDControllerFR.setIZone(kIzFr);
-        //shooterPIDControllerFR.setFF(kFFFr);
-        //shooterPIDControllerFR.setOutputRange(kMinOutputFR, kMaxOutputFR);
-
-
-        
-        //double flRPM =  -5350.0;  // TODO: was 5320.  Might need 2 speeds for far and away. get encoder values from smartdashboard
-        //double frRPM =  5300.0;  // TODO: was 5205.  get encoder values from smartdashboard
-
-        //coralPIDController.setReference(frRPM, SparkMax.ControlType.kVelocity);
-
-
-        //SmartDashboard.putNumber("RPM Coral", frRPM);
-        //SmartDashboard.putNumber("ProcessVariable Coral", coralMotorEncoder.getVelocity());
-       // Logger.registerCanSparkMax("Shooter Motor FL", () -> getVelocity());
-       // Logger.registerCanSparkMax("Shooter Motor FR", shooterMotorFREncoder.getVelocity());
- // }
-
-
   public void runCoralReverse() {
         double coralVelVoltsReverse = -0.75 * 12.0;
       
@@ -218,19 +145,19 @@ public class CoralSubSys extends SubsystemBase {
   }
 
 
-  //public boolean isCoralSeen() {
-   // return !coralSensor.get();
-//  }
+  public boolean isCoralSeen() {
+   return !coralSensor.get();
+  }
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     //coralSeen = !coralSensor.get();
-    //SmartDashboard.putBoolean("CoralSensor", !coralSensor.get());
-    //SmartDashboard.putBoolean("CoralSensor", coralSeen);
+    SmartDashboard.putBoolean("CoralSensor", !coralSensor.get());
+    SmartDashboard.putBoolean("CoralSensor", coralSeen);
 
-    //SmartDashboard.putNumber("Coral Motor Speed", coralMotorEncoder.getVelocity());
+    SmartDashboard.putNumber("Coral Motor Speed", coralMotorEncoder.getVelocity());
    // SmartDashboard.putNumber("Coral motor volts", coralMotor.getAppliedOutput());
        
   }

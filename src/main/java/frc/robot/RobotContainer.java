@@ -81,7 +81,7 @@ public class RobotContainer {
     private SwerveSubsystem swerveDrive;
     private FrontLeds frontLeds;
     private RearLeds rearLeds;
-    //private Vision vision;
+    private Vision vision;
 
     private XboxController driverController;
     private XboxController operatorController;
@@ -104,10 +104,12 @@ public class RobotContainer {
         
 
         String swerveDirectory = "swerve/neo";
+
         //subsystems used in all robots
         swerveDrive = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveDirectory));
         frontLeds = new FrontLeds(6, 54);
         rearLeds = new RearLeds(frontLeds);
+
         coralSensor = new DigitalInput(9); 
         coralSubSysObj = new CoralSubSys(coralSensor);
 
@@ -131,7 +133,9 @@ public class RobotContainer {
             swerveDrive.setMaximumSpeed(3.4, Math.PI/1.30); //maxspeed of robot
         }
 
-        //vision = new Vision(swerveDrive);
+        
+
+        vision = new Vision(swerveDrive);
         frontCamera = new AprilTagCamera("front",
             new Rotation3d(0, Units.degreesToRadians(0), Math.toRadians(0)),
             new Translation3d(0.363,
@@ -139,7 +143,7 @@ public class RobotContainer {
                                 0.31),
             VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
 
-       // vision.addCamera(frontCamera);
+       vision.addCamera(frontCamera);
         /*
         vision.addCamera(new AprilTagCamera("rear",
             new Rotation3d(0, Units.degreesToRadians(-20), Math.toRadians(0)),
