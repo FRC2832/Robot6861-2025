@@ -135,15 +135,15 @@ public class RobotContainer {
 
         
 
-        vision = new Vision(swerveDrive);
-        frontCamera = new AprilTagCamera("front",
-            new Rotation3d(0, Units.degreesToRadians(0), Math.toRadians(0)),
-            new Translation3d(0.363,
-                                0,
-                                0.31),
-            VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+       // vision = new Vision(swerveDrive);
+        //frontCamera = new AprilTagCamera("front",
+            //new Rotation3d(0, Units.degreesToRadians(0), Math.toRadians(0)),
+           // new Translation3d(0.363,
+                              //  0,
+                             //   0.31),
+           // VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
 
-       vision.addCamera(frontCamera);
+       //vision.addCamera(frontCamera);
         /*
         vision.addCamera(new AprilTagCamera("rear",
             new Rotation3d(0, Units.degreesToRadians(-20), Math.toRadians(0)),

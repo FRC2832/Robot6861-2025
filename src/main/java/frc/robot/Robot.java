@@ -38,7 +38,7 @@ public class Robot extends LoggedRobot {
      */
     public Robot() {
         //start logging to WpiLog file
-        //DataLogManager.start();
+        DataLogManager.start();
 
         // Start AdvantageKit logger
         Logger.addDataReceiver(new NT4Publisher());

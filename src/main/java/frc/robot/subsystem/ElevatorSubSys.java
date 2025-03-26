@@ -154,7 +154,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL4() {
 
-    double rotations = -21.0;  
+    double rotations = -19.5;    //was 21.5 for teleop, 21.0 for auton
 
     elevFrontLeaderPIDController.setReference(
                                 rotations, 
@@ -177,7 +177,7 @@ public class ElevatorSubSys extends SubsystemBase {
 
   public void runElevL3() {
 
-    double rotations = -12.0;  //l3 value
+    double rotations = -13.0;  //l3 value
     //System.out.println("in runElevL2");
 
     //elevFrontLeaderPIDController.setReference(
@@ -240,6 +240,8 @@ public class ElevatorSubSys extends SubsystemBase {
 
    // elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     elevFrontLeaderMotor.setVoltage(upElevVelVolts);
+
+    //System.out.println("Elevator encoder" + elevFrontLeaderEncoder);
 
      // Uncomment these for development, testing or debugging work:
     //SmartDashboard.putNumber("SetPoint", rotations);
@@ -310,6 +312,7 @@ public class ElevatorSubSys extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // Uncomment this for development, testing or debugging work:
+   // System.out.println("Elevator encoder" + elevFrontLeaderEncoder);
     SmartDashboard.putNumber("Elevator Front Leader encoder", elevFrontLeaderEncoder.getPosition());
     //SmartDashboard.putNumber("Elevator Front Leader percent", elevFrontLeaderMotor.getAppliedOutput());
 
