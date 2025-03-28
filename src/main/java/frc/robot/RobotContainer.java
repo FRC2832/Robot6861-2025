@@ -141,7 +141,8 @@ public class RobotContainer {
            // new Translation3d(0.363,
                               //  0,
                              //   0.31),
-           // VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+           // VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));  
+           //1st vector units = ?, 2nd one is in meters, 
 
        //vision.addCamera(frontCamera);
         /*
@@ -178,7 +179,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Score", new CoralOutAutonCmd(coralSubSysObj));
         NamedCommands.registerCommand("LowerElevator", new ElevatorDownCmd(elevatorSubSysObj));
         //NamedCommands.registerCommand("StowElevator", new ElevatorBottomAutonCmd(elevatorSubSysObj));
-        //TODO: create Auton cmd for Stow
+        
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -225,16 +226,17 @@ public class RobotContainer {
         //hangWinchSubSysObj.setDefaultCommand(new WinchStopCmd(hangWinchSubSysObj));
         elevatorSubSysObj.setDefaultCommand(new ElevatorHoldCmd(elevatorSubSysObj));
 
-        SequentialCommandGroup climbGroup = new SequentialCommandGroup( 
-                new WinchInCmd(hangWinchSubSysObj),
-                new RampUpCmd(winchPinSubSysObj)
-        );
-        climbGroup.setName("climbGroup");
+        //SequentialCommandGroup climbGroup = new SequentialCommandGroup( 
+               // new WinchInCmd(hangWinchSubSysObj),
+              //  new RampUpCmd(winchPinSubSysObj)
+       // );
+       // climbGroup.setName("climbGroup");
 
         
         SequentialCommandGroup climbPrepGroup = new SequentialCommandGroup( 
             new WinchOutCmd(hangWinchSubSysObj),
-            new RampDownCmd(winchPinSubSysObj)
+            new RampDownCmd(winchPinSubSysObj),
+            new RampUpCmd(winchPinSubSysObj)
                
         );
         climbPrepGroup.setName("climbPrepGroup");
@@ -272,7 +274,7 @@ public class RobotContainer {
         //new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
        // new Trigger(driverController::getYButton).whileTrue(climbPrepGroup);
-        new Trigger(driverController::getAButton).whileTrue(climbGroup);
+        new Trigger(driverController::getAButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
 
         
         
