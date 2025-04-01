@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -43,6 +44,7 @@ import frc.robot.commands.CoralStopCmd;
 import frc.robot.commands.ElevatorBottomCmd;
 import frc.robot.commands.ElevatorDownCmd;
 import frc.robot.commands.ElevatorHoldCmd;
+import frc.robot.commands.ElevatorL2Cmd;
 import frc.robot.commands.ElevatorL4Cmd;
 import frc.robot.commands.ElevatorStopCmd;
 import frc.robot.commands.ElevatorUpCmd;
@@ -164,6 +166,9 @@ public class RobotContainer {
         // NamedCommands.registerCommand("ScorePieceL1", new WaitCommand(1));
         // NamedCommands.registerCommand("GetFromHP", new WaitCommand(2));
         NamedCommands.registerCommand("RaiseElevL4", new ElevatorL4Cmd(elevatorSubSysObj));
+
+        NamedCommands.registerCommand("RaiseElevL2", new ElevatorL2Cmd(elevatorSubSysObj));
+
         NamedCommands.registerCommand("Score", new CoralOutAutonCmd(coralSubSysObj));
         NamedCommands.registerCommand("LowerElevator", new ElevatorBottomCmd(elevatorSubSysObj));
         
@@ -214,14 +219,25 @@ public class RobotContainer {
         hangWinchSubSysObj.setDefaultCommand(new WinchStopCmd(hangWinchSubSysObj));
         elevatorSubSysObj.setDefaultCommand(new ElevatorHoldCmd(elevatorSubSysObj));
 
+        SequentialCommandGroup climbPrepGroup = new SequentialCommandGroup(
+                new WinchOutCmd(hangWinchSubSysObj), 
+                new RampDownCmd(winchPinSubSysObj)
+        );
+        climbPrepGroup.setName("climbPrepGroup");
+
+
+
+
+
         //rampSubsystem.setDefaultCommand(rampSubsystem.runMotor(() -> (driverController.getRightTriggerAxis() * 0.35) - (driverController.getLeftTriggerAxis() * 0.35)));
 
         // Trigger driverRightTrigger = driverController.rightTrigger();
   
 
         //Prep for hanging commands
-        new Trigger(operatorController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
-        new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
+        //TODO: put this on button next to left joystick - not sure if that is start or back. I think it's back   new Trigger(operatorController::getButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
+        //TODO: change winch out and ramp down and ramp up as sequential commands to Select button  - new RampDownCmd(winchPinSubSysObj)
+       //TODO: put this on as sequential command attached to select or start button?  new Trigger(operatorController::getAButtonReleased).whileTrue(new RampUpCmd(winchPinSubSysObj));
        // new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutPrepCmd(hangWinchSubSysObj));
 
        // new Trigger(driverController::getAButtonPressed).whileTrue(new RampDownCmd(winchPinSubSysObj));
@@ -230,14 +246,19 @@ public class RobotContainer {
         // Hanging commands
         //new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.3).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
 
-        new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
-        new Trigger(operatorController::getYButton).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        //new Trigger(operatorController::getXButton).whileTrue(new WinchOutCmd(hangWinchSubSysObj));
+        new Trigger(() -> operatorController.getLeftTriggerAxis() >= 0.2).whileTrue(new WinchInCmd(hangWinchSubSysObj));
+        new Trigger(() -> operatorController.getLeftBumperButtonPressed()).whileTrue(climbPrepGroup);
+
 
         new Trigger(operatorController::getStartButtonPressed).whileTrue(new WinchStopCmd(hangWinchSubSysObj));
 
 
         // Elevator Commands
         new Trigger(() -> operatorController.getPOV() == 0).whileTrue(new ElevatorL4Cmd(elevatorSubSysObj));
+        //TODO: test that this works as instant command with A button pressed while true....
+        new Trigger(() -> operatorController.getAButtonPressed()).whileTrue(new ElevatorL2Cmd(elevatorSubSysObj));
+        
         new Trigger(() -> operatorController.getLeftY() < -0.075).whileTrue(new ElevatorUpJoystickCmd(elevatorSubSysObj, operatorController));
        // new Trigger(driverController::getYButtonPressed).whileTrue(new ElevatorUpCmd(elevatorSubSysObj));
         new Trigger(() -> operatorController.getLeftY() > 0.075).whileTrue(new ElevatorDownCmd(elevatorSubSysObj, operatorController));
@@ -264,11 +285,11 @@ public class RobotContainer {
         new Trigger(() -> operatorController.getRightTriggerAxis() <= 0.3).whileTrue(new CoralStopCmd(coralSubSysObj));
 
 
-        new Trigger(driverController::getRightBumperButton).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        new Trigger(() -> driverController.getRightBumperButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
         //new Trigger(driverController::getBButtonPressed).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
-        new Trigger(operatorController::getBButton).whileTrue(new CoralReverseCmd(coralSubSysObj));
+        new Trigger(() -> operatorController.getBButtonPressed()).whileTrue(new CoralReverseCmd(coralSubSysObj));
 
         new Trigger(() -> driverController.getStartButtonPressed()).whileTrue(new InstantCommand(() -> swerveDrive.zeroGyroWithAlliance()));
 
