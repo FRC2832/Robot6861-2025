@@ -41,6 +41,7 @@ import frc.robot.commands.CoralOutAutonCmd;
 import frc.robot.commands.CoralOutCmd;
 import frc.robot.commands.CoralReverseCmd;
 import frc.robot.commands.CoralStopCmd;
+import frc.robot.commands.ElevStowAutonCmd;
 import frc.robot.commands.ElevatorBottomCmd;
 import frc.robot.commands.ElevatorDownCmd;
 import frc.robot.commands.ElevatorHoldCmd;
@@ -130,7 +131,7 @@ public class RobotContainer {
             swerveDrive.resetOdometry(new Pose2d(16.28, 4.03,Rotation2d.fromDegrees(180)));
         }
         else {
-            swerveDrive.setMaximumSpeed(3.4, Math.PI/1.30); //maxspeed of robot
+            swerveDrive.setMaximumSpeed(3.55, Math.PI/1.25); //maxspeed of robot
         }
 
         
@@ -138,9 +139,9 @@ public class RobotContainer {
        // vision = new Vision(swerveDrive);
         //frontCamera = new AprilTagCamera("front",
             //new Rotation3d(0, Units.degreesToRadians(0), Math.toRadians(0)),
-           // new Translation3d(0.363,
-                              //  0,
-                             //   0.31),
+           // new Translation3d(0.305,
+                              //  0.14,
+                             //   0.279),  // meters. measured from pigeon center to camera center
            // VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));  
            //1st vector units = ?, 2nd one is in meters, 
 
@@ -178,7 +179,7 @@ public class RobotContainer {
        
         NamedCommands.registerCommand("Score", new CoralOutAutonCmd(coralSubSysObj));
         NamedCommands.registerCommand("LowerElevator", new ElevatorDownCmd(elevatorSubSysObj));
-        //NamedCommands.registerCommand("StowElevator", new ElevatorBottomAutonCmd(elevatorSubSysObj));
+        NamedCommands.registerCommand("StowElevator", new ElevStowAutonCmd(elevatorSubSysObj));
         
 
         // Build an auto chooser. This will use Commands.none() as the default option.

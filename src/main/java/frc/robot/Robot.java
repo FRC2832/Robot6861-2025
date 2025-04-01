@@ -15,6 +15,7 @@ import com.pathplanner.lib.util.PPLibTelemetry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -134,6 +135,7 @@ public class Robot extends LoggedRobot {
 
         //this clears all the old polled triggers
         CommandScheduler.getInstance().getActiveButtonLoop().clear();
+       // XboxController.setRumbleGeneric
         //since we sometimes switch configurations based on controller type, 
         //reset the bindings
         m_robotContainer.configureBindings();

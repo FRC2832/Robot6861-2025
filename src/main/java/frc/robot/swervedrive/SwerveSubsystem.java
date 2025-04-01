@@ -73,7 +73,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private final boolean             visionDriveTest     = false;
 
-  private DoubleSubscriber maxSpeed; // fake max speed (not used anymore)
+  private DoubleSubscriber maxSpeed; // fake max speed (not used anymore) because Elastic 
+                                      // and shuffleboard wouldn't hold the new value - they both kept going back to 1.5!
 
   private double maximumSpeed; // unit: meters per second
   private double maxRotationalVelocity; // unit: radians per second
@@ -86,8 +87,8 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveSubsystem(File directory)
   {
     maxSpeed = UtilFunctions.getSettingSub("Swerve/Max Speed", 5); // not used
-    maximumSpeed = 3.4;
-    maxRotationalVelocity = Math.PI/1.30;
+    maximumSpeed = 3.55;
+    maxRotationalVelocity = Math.PI/1.25;
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -103,8 +104,8 @@ public class SwerveSubsystem extends SubsystemBase
     }
 
     swerveDrive.swerveController.addSlewRateLimiters(
-      new SlewRateLimiter(2.0), // x   started at 3.0 higher is more responsive but also more tippy
-      new SlewRateLimiter(2.0), // y    started at 3.0.  Higher is more responsive but also more tippy
+      new SlewRateLimiter(1.8), // x   started at 3.0 higher is more responsive but also more tippy
+      new SlewRateLimiter(1.8), // y    started at 3.0.  Higher is more responsive but also more tippy
       new SlewRateLimiter(2.0) // angle  started at 3.0 
     );
 

@@ -82,7 +82,7 @@ public class ElevatorSubSys extends SubsystemBase {
       .p(0.09, ClosedLoopSlot.kSlot0)
       .i(0.0, ClosedLoopSlot.kSlot0)
       .d(0.0, ClosedLoopSlot.kSlot0)
-      .outputRange(-0.50, 0.025, ClosedLoopSlot.kSlot0); //was 0.3
+      .outputRange(-0.40, 0.025, ClosedLoopSlot.kSlot0); //max output was 0.5, but seemed too fast after elevator string fix at Livonia playoffs match 2, was 0.3
 
 
     
@@ -250,6 +250,34 @@ public class ElevatorSubSys extends SubsystemBase {
    // SmartDashboard.putNumber("Elevator up motor volts", elevFrontLeaderMotor.getAppliedOutput());
    // SmartDashboard.putNumber("Back Follower", elevBackFollowerMotor.getAppliedOutput());
    // SmartDashboard.putNumber("Front Leader", elevFrontLeaderMotor.getAppliedOutput());
+   
+  }
+
+
+  public void runElevStowAuton() {
+
+    double rotations = -0.1;
+
+    elevFrontLeaderPIDController.setReference(rotations, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
+
+    // Voltage open loop control
+    // if (elevFrontLeaderEncoder.getPosition() > 4.5 || elevFrontLeaderEncoder.getPosition() < 6.0) { //TODO - change to 14.5 and 16.0 when working 
+       // elevFrontLeaderMotor.setVoltage(holdElevVelVolts);
+   // } else {
+
+       // elevFrontLeaderMotor.setVoltage(upElevVelVolts);
+    //}
+       
+
+     // Uncomment these for development, testing or debugging work:
+   // SmartDashboard.putNumber("SetPoint", rotations);
+    //SmartDashboard.putNumber("ProcessVariable", elevFrontLeaderEncoder.getPosition());
+    //SmartDashboard.putNumber("Elevator up Motor Speed", elevFrontLeaderEncoder.getVelocity());
+    //SmartDashboard.putNumber("Elevator down motor volts CL", elevFrontLeaderMotor.getAppliedOutput());
+  //  SmartDashboard.putNumber("Back Follower volts", elevBackFollowerMotor.getAppliedOutput());
+   
+
    
   }
 

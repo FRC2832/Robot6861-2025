@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Processor Line To Reef"
+            "pathName": "Center To Score Prep"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "RaiseElevL2"
+            "name": "RaiseElevL4"
           }
         },
         {
@@ -36,22 +36,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Processor Reef To Source"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StowElevator"
-                }
-              }
-            ]
+            "pathName": "Reef Move back"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StowElevator"
           }
         }
       ]

@@ -9,16 +9,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.ElevatorSubSys;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorL2Cmd extends Command {
-  /** Creates a new ElevatorL2Cmd. */
+public class ElevStowAutonCmd extends Command {
+  /** Creates a new ElevStowAutonCmd. */
 
   private final ElevatorSubSys elevatorSubSysObj;
   private final Timer timer = new Timer();
 
-  public ElevatorL2Cmd(ElevatorSubSys elevatorSubSys) {
+  public ElevStowAutonCmd(ElevatorSubSys elevatorSubSys) {
     // Use addRequirements() here to declare subsystem dependencies.
+
     this.elevatorSubSysObj = elevatorSubSys;
+    
     addRequirements(elevatorSubSysObj);
+
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +34,7 @@ public class ElevatorL2Cmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevatorSubSysObj.runElevL2();
+    elevatorSubSysObj.runElevStowAuton();
   }
 
   // Called once the command ends or is interrupted.
@@ -44,7 +47,7 @@ public class ElevatorL2Cmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= 2.25;  //was 3.0. No longer need it long for auton.  Do I need it long for teleop?  may need to move this comamnd to auton command and give operator one with no timer ending
+    return timer.get() >= 6.0;
     //return false;
   }
 }

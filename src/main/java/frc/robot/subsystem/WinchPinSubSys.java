@@ -49,7 +49,7 @@ public class WinchPinSubSys extends SubsystemBase {
 
     downWinchVelPct = 99.0 / 100.0;
     downWinchVelVolts = downWinchVelPct * 12.0;
-    upWinchVelPct = 35.0 / 100.0;
+    upWinchVelPct = 70.0 / 100.0;
     upWinchVelVolts = upWinchVelPct * 12.0;
     stopWinchVelVolts = 0.0;
     
