@@ -102,11 +102,19 @@ public class SwerveSubsystem extends SubsystemBase
     {
       throw new RuntimeException(e);
     }
-
+    // prevent tipping of the robot
+    // when elevator is higher, use values below
     swerveDrive.swerveController.addSlewRateLimiters(
       new SlewRateLimiter(1.8), // x   started at 3.0 higher is more responsive but also more tippy
       new SlewRateLimiter(1.8), // y    started at 3.0.  Higher is more responsive but also more tippy
       new SlewRateLimiter(2.0) // angle  started at 3.0 
+
+    // when elevator is lower, use values below
+    // new SlewRateLimiter(2.6), // x   started at 3.0 higher is more responsive but also more tippy
+    // new SlewRateLimiter(2.6), // y    started at 3.0.  Higher is more responsive but also more tippy
+    // new SlewRateLimiter(2.6) // angle  started at 3.0 
+
+   // resetMaximumSpeed()  could use this method instead of slew rate limiters
     );
 
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.

@@ -334,6 +334,7 @@ public class ElevatorSubSys extends SubsystemBase {
     elevFrontLeaderMotor.setVoltage(stopElevVelVolts);
   }
 
+  //public getElevPosition() 
 
 
   @Override
